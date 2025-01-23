@@ -1,0 +1,57 @@
+﻿﻿
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100vh;
+}
+
+.ingredients {
+    padding: 20px;
+    background-image: linear-gradient(180deg, rgb(135, 206, 250) 0%, #dda0dd 70%);
+}
+
+.category-header {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.category-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.ingredients-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.ingredient-card {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: inline-block;
+    cursor: pointer;
+    margin: 5px;
+    transition: all 0.2s ease-in-out;
+}
+
+    .ingredient-card.selected {
+        font-weight: bold;
+        background-color: lightblue;
+        color: darkblue;
+        border-color: blue;
+    }
+
+.recipes {
+    padding: 20px;
+}
+
+@media (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+}

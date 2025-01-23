@@ -1,7 +1,47 @@
 ﻿@page "/"
+@using System.Text.Json
+@inject HttpClient Http
+<h2>Related Recipes</h2>
 
-<PageTitle>Home</PageTitle>
+<div class="mb-3">
+    <input type="text" class="form-control" placeholder="Search Recipes" @oninput="ApplySearch">
 
-<h1>Hello, world!</h1>
+</div>
 
-Welcome to your new app.
+<!-- Filters -->
+<div class="filters mb-3">
+    <label>
+        <input type="radio" name="filter" value="All" @onchange="ApplyFilter" checked> All
+    </label>
+    <label>
+        <input type="radio" name="filter" value="Veg" @onchange="ApplyFilter"> Veg
+    </label>
+    <label>
+        <input type="radio" name="filter" value="Non-Veg" @onchange="ApplyFilter"> Non-Veg
+    </label>
+</div>
+
+
+
+@code {
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+       
+    }
+
+
+
+    private void ApplyFilter(ChangeEventArgs? e = null)
+    {
+      
+    }
+
+    private void ApplySearch(ChangeEventArgs e)
+    {
+   
+    }
+
+   
+}

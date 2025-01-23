@@ -1,0 +1,56 @@
+[
+    {
+        "Name": "Pantry Essentials",
+        "Icon": "data/images/pantry.jpg",
+        "Ingredients": [
+            { "Name": "Butter" },
+            { "Name": "Egg" },
+            { "Name": "Garlic" },
+            { "Name": "Salt" },
+            { "Name": "Pepper" }
+        ]
+    },
+    {
+        "Name": "Vegetables & Greens",
+        "Icon": "data/images/vegy.jpg",
+        "Ingredients": [
+            { "Name": "Onion" },
+            { "Name": "Tomato" },
+            { "Name": "Spinach" },
+            { "Name": "Carrot" },
+            { "Name": "Broccoli" }
+        ]
+    },
+    {
+        "Name": "Fruits",
+        "Icon": "data/images/fruits.jpg",
+        "Ingredients": [
+            { "Name": "Apple" },
+            { "Name": "Banana" },
+            { "Name": "Orange" },
+            { "Name": "Strawberry" },
+            { "Name": "Grapes" }
+        ]
+    },
+    {
+        "Name": "Meats",
+        "Icon": "data/images/meats.jpg",
+        "Ingredients": [
+            { "Name": "Chicken Breast" },
+            { "Name": "Pork Chop" },
+            { "Name": "Bacon" },
+            { "Name": "Sausage" }
+        ]
+    },
+    {
+        "Name": "Dairy",
+        "Icon": "data/images/dairy.jpg",
+        "Ingredients": [
+            { "Name": "Milk" },
+            { "Name": "Cheddar Cheese" },
+            { "Name": "Yogurt" },
+            { "Name": "Cream Cheese" },
+            { "Name": "Butter" }
+        ]
+    }
+]
