@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-﻿﻿
-=======
-﻿
->>>>>>> 8f71b3b44c60af417a5e6192e665043c7dca9b76
 .grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -11,7 +6,6 @@
 
 .ingredients {
     padding: 20px;
-<<<<<<< HEAD
     background-image: linear-gradient(180deg, rgb(135, 206, 250) 0%, #dda0dd 70%);
 }
 
@@ -51,24 +45,22 @@
         border-color: blue;
     }
 
-=======
 }
 
->>>>>>> 8f71b3b44c60af417a5e6192e665043c7dca9b76
 .recipes {
     padding: 20px;
 }
 
-<<<<<<< HEAD
+
 @media (max-width: 768px) {
     .grid-container {
         grid-template-columns: 1fr;
     }
 }
-=======
+
 @media (max-width: 768px){
     .grid-container{
         grid-template-columns: 1fr;
     }
 }
->>>>>>> 8f71b3b44c60af417a5e6192e665043c7dca9b76
+
