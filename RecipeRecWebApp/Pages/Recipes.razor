@@ -1,5 +1,4 @@
 ﻿@page "/"
-
 @inject HttpClient Http
 
 
@@ -7,10 +6,9 @@
 
 <div class="grid-container">
 	<div class="ingredients">
-
         <div class="container mt-3">
             <div class="search-bar mb-3">
-                <input type="text" class="form-control" placeholder="Add/Remove/Paste Ingredients" @bind="searchTerm" @oninput="FilterIngredients" />
+                <input type="text" class="form-control" placeholder="Search Ingredients" @bind="searchTerm" @oninput="FilterIngredients" />
             </div>
 
             <div class="alert alert-secondary" role="alert">
@@ -46,7 +44,6 @@
                 </div>
             }
         </div>
-
 	</div>
 	<div class="recipes">
 

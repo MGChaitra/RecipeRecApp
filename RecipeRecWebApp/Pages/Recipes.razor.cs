@@ -53,10 +53,7 @@ namespace RecipeRecWebApp.Pages
             }
         }
 
-        private void ToggleIngredientSelection(Ingredient ingredient)
-        {
-            ingredient.Selected = !ingredient.Selected;
-        }
+        private void ToggleIngredientSelection(Ingredient ingredient) => ingredient.Selected = !ingredient.Selected;
 
         private class Ingredient
         {

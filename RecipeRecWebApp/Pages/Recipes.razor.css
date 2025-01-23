@@ -7,6 +7,8 @@
 .ingredients {
     padding: 20px;
     background-image: linear-gradient(180deg, rgb(135, 206, 250) 0%, #dda0dd 70%);
+    height: 100vh;
+    overflow-y: auto;
 }
 
 .category-header {
@@ -38,13 +40,11 @@
     transition: all 0.2s ease-in-out;
 }
 
-    .ingredient-card.selected {
-        font-weight: bold;
-        background-color: lightblue;
-        color: darkblue;
-        border-color: blue;
-    }
-
+.ingredient-card.selected {
+    font-weight: bold;
+    background-color: lightblue;
+    color: darkblue;
+    border-color: blue;
 }
 
 .recipes {
@@ -54,12 +54,6 @@
 
 @media (max-width: 768px) {
     .grid-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 768px){
-    .grid-container{
         grid-template-columns: 1fr;
     }
 }
