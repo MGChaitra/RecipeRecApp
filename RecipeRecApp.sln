@@ -5,7 +5,7 @@ VisualStudioVersion = 17.11.35431.28
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeRecAPI", "RecipeRecAPI\RecipeRecAPI.csproj", "{35933017-B53A-4405-8618-9CD1B7D6518E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeRecWebApp", "RecipeRecWebApp\RecipeRecWebApp.csproj", "{35FCE220-54E4-4D80-B122-CDA9001A8AD7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeRecWebApp", "RecipeRecWebApp\RecipeRecWebApp.csproj", "{35FCE220-54E4-4D80-B122-CDA9001A8AD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
