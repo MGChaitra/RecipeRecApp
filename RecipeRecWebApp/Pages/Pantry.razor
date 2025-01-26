@@ -1,5 +1,19 @@
 ﻿@page "/Pantry"
+@using RecipeRecWebApp.Models
+@inject ILogger<Pantry> logger;
 
-<PageTitle>Pantry</PageTitle>
+<PageTitle>Pantry</PageTitle>	
+<div class="grid-container">
+	<div class="basket">
+		<h1>Pantry</h1>
+		@foreach(var item in SharedDataModel.SelectedIngredients)
+		{
+			<div class="basket-item">
+				<p>@item.Name</p>
+				<button @onclick="() => { DeleteSelected(item); }" class="btn btn-danger"><i class="bi bi-trash"></i>Delete</button>
+			</div>
+		}
+	</div>
+</div>
 
-<h1>Pantry</h1>
+

@@ -1,4 +1,6 @@
-﻿﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using Models;
+﻿
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Find Recipes</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -21,7 +23,7 @@
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Pantry" Match="NavLinkMatch.All">
-                <span class="bi bi-basket-nav-menu" aria-hidden="true"></span> Pantry
+                <span class="bi bi-basket-nav-menu" aria-hidden="true"></span> Pantry (@SharedDataModel.SelectedIngredients.Count)
             </NavLink>
         </div>
     </nav>

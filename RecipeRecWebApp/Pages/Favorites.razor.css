@@ -1,0 +1,16 @@
+﻿.basket {
+    padding: 20px;
+    background-image: linear-gradient(180deg, rgb(135, 206, 250) 0%, #dda0dd 70%);
+    height: 100vh;
+    width: 50vh;
+    overflow-y: scroll;
+    border: solid black;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+}

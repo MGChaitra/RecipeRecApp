@@ -1,74 +1,112 @@
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
+using RecipeRecWebApp.Models;
+
 namespace RecipeRecWebApp.Pages
 {
     public partial class Recipes
     {
         private string searchTerm = string.Empty;
-        private List<Category> Categories = new();
-        private List<Category> FilteredCategories = new();
-
-        protected override async Task OnInitializedAsync()
+        private List<CategoryModel> FilteredCategories = [];
+        protected override void OnInitialized()
+        {
+            try
+            { 
+                FilteredCategories = SharedDataModel.Categories;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error loading categories: {ex.Message}");
+            }
+        }
+        private async Task HandleKeyDown(KeyboardEventArgs e)
+        {
+            if (e.Key == "Enter")
+            {
+                await FilterIngredients();
+            }
+        }
+        private async Task FilterIngredients()
         {
             try
             {
 
-                var jsonData = await Http.GetStringAsync("data/ingredients.json");
-                Categories = System.Text.Json.JsonSerializer.Deserialize<List<Category>>(jsonData) ?? new List<Category>();
+				var flag = 0;
+				foreach (var category in SharedDataModel.Categories)
+				{
+					foreach (var ingredient in category.Ingredients)
+					{
+						ingredient.Visible = (ingredient.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || searchTerm.Contains(ingredient.Name, StringComparison.OrdinalIgnoreCase)) && !string.IsNullOrEmpty(searchTerm);
 
-
-                foreach (var category in Categories)
-                {
-                    category.IsExpanded = true;
-                    foreach (var ingredient in category.Ingredients)
-                    {
-                        ingredient.Visible = true;
-                        ingredient.Selected = false;
-                    }
-                }
-
-                FilteredCategories = Categories;
-            }
+						if (ingredient.Visible)
+						{
+							category.IsExpanded = true;
+						}
+					}
+					if (category.IsExpanded)
+					{
+						flag = 1;
+					}
+				}
+				if (flag == 0)
+				{
+					await JSRuntime.InvokeVoidAsync("scrollToClass", "grid-container");
+				}
+				else
+				{
+					await JSRuntime.InvokeVoidAsync("scrollToClass", "ingredient-card");
+				}
+			}
             catch (Exception ex)
             {
-                Console.WriteLine($"Error loading categories: {ex.Message}");
+                logger.LogError($"Error: {ex.Message}");
             }
-        }
-
-        private void FilterIngredients()
-        {
-            foreach (var category in Categories)
-            {
-                foreach (var ingredient in category.Ingredients)
-                {
-                    ingredient.Visible = string.IsNullOrWhiteSpace(searchTerm) || ingredient.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase);
-                }
-            }
-        }
+		}
 
         private void ToggleCategory(string categoryName)
         {
-            var category = Categories.FirstOrDefault(c => c.Name == categoryName);
-            if (category != null)
+            try {
+				var category = SharedDataModel.Categories.FirstOrDefault(c => c.Name == categoryName);
+				if (category != null)
+				{
+					category.IsExpanded = !category.IsExpanded;
+					if (category.IsExpanded)
+					{
+						foreach (var ingredient in category.Ingredients)
+						{
+							ingredient.Visible = true;
+						}
+					}
+				}
+			}
+            catch (Exception ex) 
             {
-                category.IsExpanded = !category.IsExpanded;
+                logger.LogError($"Error: {ex.Message}");
             }
         }
 
-        private void ToggleIngredientSelection(Ingredient ingredient) => ingredient.Selected = !ingredient.Selected;
-
-        private class Ingredient
+        private void ToggleIngredientSelection(IngredientModel ingredient)
         {
-            public string Name { get; set; } = string.Empty;
-            public string ImageUrl { get; set; } = string.Empty;
-            public bool Visible { get; set; } = true;
-            public bool Selected { get; set; } = false;
+            try
+            {
+				ingredient.Selected = !ingredient.Selected;
+				if (ingredient.Selected)
+				{
+					SharedDataModel.SelectedIngredients.Add(ingredient);
+				}
+				else
+				{
+					SharedDataModel.SelectedIngredients.Remove(ingredient);
+				}
+				SharedDataModel.UpdateChanges();
+
+			}
+			catch(Exception ex)
+            {
+                logger.LogError($"Error: {ex.Message}");
+            }
+            
         }
 
-        private class Category
-        {
-            public string Name { get; set; } = string.Empty;
-            public string Icon { get; set; } = string.Empty;
-            public bool IsExpanded { get; set; } = true;
-            public List<Ingredient> Ingredients { get; set; } = new();
-        }
     }
 }
