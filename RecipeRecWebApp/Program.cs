@@ -8,16 +8,9 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-builder.Services.AddScoped<IStartUpService,StartUpService>();
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7175/") });
+builder.Services.AddScoped<IIngredientService, IngredientService>();
+
 var app = builder.Build();
-try
-{
-    var startUpService = app.Services.GetRequiredService<IStartUpService>();
-    await startUpService.InitializeIngredientsAsync();
-}
-catch(Exception ex)
-{
-    Console.WriteLine(ex.ToString());
-}
+
 await app.RunAsync();

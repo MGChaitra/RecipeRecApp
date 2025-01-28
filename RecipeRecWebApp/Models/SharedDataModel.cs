@@ -1,6 +1,6 @@
 ﻿namespace RecipeRecWebApp.Models
 {
-    public static class SharedDataModel
+    public class SharedDataModel
     {
         public static List<CategoryModel> Categories = [];
         public static List<IngredientModel> Ingredients = [];
