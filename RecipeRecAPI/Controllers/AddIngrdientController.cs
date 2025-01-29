@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using RecipeRecAPI.Contracts;
 using RecipeRecWebApp.Models;
 
 namespace RecipeRecAPI.Controllers
@@ -8,41 +9,35 @@ namespace RecipeRecAPI.Controllers
     [EnableCors("cors")]
     [ApiController]
     [Route("api/[controller]")]
-    public class AddIngrdientController : Controller
+    public class AddIngredientController : Controller
     {
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        public AddIngrdientController(IWebHostEnvironment webHostEnvironment)
+        private readonly IIngredientService _ingredientService;
+
+        public AddIngredientController(IIngredientService ingredientService)
         {
-            _webHostEnvironment = webHostEnvironment;
+            _ingredientService = ingredientService;
         }
+
         [HttpGet]
         public IActionResult GetIngredients()
         {
-            var filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Data", "FoodDB.json");
-            if (!System.IO.File.Exists(filePath))
+            var ingredients = _ingredientService.GetIngredients();
+            if (ingredients == null)
                 return NotFound();
 
-            var jsonData = System.IO.File.ReadAllText(filePath);
-            var ingredients = JsonSerializer.Deserialize<List<IngredientModel>>(jsonData);
             return Ok(ingredients);
         }
+
         [HttpPost]
-        public Task<IActionResult> SaveFile([FromBody] IngredientModel newIngredient)
+        public IActionResult SaveFile([FromBody] IngredientModel newIngredient)
         {
-
-            var filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Data", "FoodDB.json");
-            if (!System.IO.File.Exists(filePath))
-                return Task.FromResult<IActionResult>(NotFound());
-
-            var jsonData = System.IO.File.ReadAllText(filePath);
-            var ingredients = JsonSerializer.Deserialize<List<IngredientModel>>(jsonData) ?? new List<IngredientModel>();
-
-            ingredients.Add(newIngredient);
-            var updatedJson = JsonSerializer.Serialize(ingredients);
-
-            System.IO.File.WriteAllText(filePath, updatedJson);
-            return Task.FromResult<IActionResult>(CreatedAtAction(nameof(GetIngredients), new { id = newIngredient.Id }, newIngredient));
-
+            if (newIngredient == null)
+                return BadRequest("Invalid ingredient data");
+            var success = _ingredientService.AddIngredient(newIngredient);
+            if (!success)
+                return NotFound("Data file not found");
+            return CreatedAtAction(nameof(GetIngredients), new { id = newIngredient.Id }, newIngredient);
         }
     }
+
 }

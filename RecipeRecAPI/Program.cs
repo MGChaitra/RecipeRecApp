@@ -1,3 +1,6 @@
+using RecipeRecAPI.Contracts;
+using RecipeRecAPI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(setUp =>
@@ -15,7 +18,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddSingleton<IIngredientService, IngredientService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
