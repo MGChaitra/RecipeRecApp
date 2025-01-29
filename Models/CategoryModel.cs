@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace RecipeRecWebApp.Models
+namespace Models
+
 {
     public class CategoryModel
     {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using RecipeRecAPI.Contracts;
-using RecipeRecWebApp.Models;
+using Models;
 
 namespace RecipeRecAPI.Controllers
 {

@@ -1,4 +1,4 @@
-﻿using RecipeRecWebApp.Models;
+﻿using Models;
 
 namespace RecipeRecAPI.Contracts
 {

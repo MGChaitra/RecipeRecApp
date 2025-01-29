@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
-using RecipeRecWebApp.Models;
+using Models;
 using RecipeRecWebApp.Services;
 
 namespace RecipeRecWebApp.Pages

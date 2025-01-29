@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
 using RecipeRecAPI.Contracts;
-using RecipeRecWebApp.Models;
+using Models;
 
 namespace RecipeRecAPI.Services
 {

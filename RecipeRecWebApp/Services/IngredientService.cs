@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Json;
 using Newtonsoft.Json;
 using RecipeRecWebApp.Contracts;
-using RecipeRecWebApp.Models;
+using Models;
 
 namespace RecipeRecWebApp.Services
 {

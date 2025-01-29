@@ -1,4 +1,5 @@
-﻿namespace RecipeRecWebApp.Models
+﻿namespace Models
+
 {
     public class SharedDataModel
     {
