@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeRecAPI", "RecipeRecAP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeRecWebApp", "RecipeRecWebApp\RecipeRecWebApp.csproj", "{35FCE220-54E4-4D80-B122-CDA9001A8AD7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{EFA7010E-E70A-4EBC-AC35-5F5B7130F0DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{35FCE220-54E4-4D80-B122-CDA9001A8AD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35FCE220-54E4-4D80-B122-CDA9001A8AD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35FCE220-54E4-4D80-B122-CDA9001A8AD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFA7010E-E70A-4EBC-AC35-5F5B7130F0DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA7010E-E70A-4EBC-AC35-5F5B7130F0DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFA7010E-E70A-4EBC-AC35-5F5B7130F0DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFA7010E-E70A-4EBC-AC35-5F5B7130F0DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

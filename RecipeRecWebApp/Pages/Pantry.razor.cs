@@ -1,4 +1,4 @@
-using RecipeRecWebApp.Models;
+using Models;
 
 namespace RecipeRecWebApp.Pages
 {
@@ -15,8 +15,8 @@ namespace RecipeRecWebApp.Pages
 			try
 			{
 				logger.LogInformation("Deleting data");
-				SharedDataModel.SelectedIngredients.Remove(item);
 				item.Selected = false;
+				SharedDataModel.SelectedIngredients.Remove(item);
 				StateHasChanged();
 				SharedDataModel.UpdateChanges();
 			}
