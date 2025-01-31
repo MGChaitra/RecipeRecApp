@@ -1,6 +1,7 @@
 ﻿using Models;
 using RecipeRecWebApp.Contracts;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace RecipeRecWebApp.Services
 {
@@ -45,19 +46,42 @@ namespace RecipeRecWebApp.Services
 			}
 		}
 
-		public void MapIngredients()
+
+		public async Task<List<RecipeModel>> GetRecipes(List<IngredientModel> selectedIngredients)
 		{
-			SharedDataModel.Categories = SharedDataModel.Ingredients
-								.GroupBy(ingredient => ingredient.food_group, StringComparer.OrdinalIgnoreCase)
-								.Select(group => new CategoryModel
-								{
-									Name = group.Key,
-									Ingredients = [.. group],
-									IsExpanded = false
-								})
-								.ToList();
+			try
+			{
+				var response = await _httpClient.PostAsJsonAsync("api/Ingredient/GetRecipes", selectedIngredients);
+				var res = await response.Content.ReadAsStringAsync();
+				var list = JsonSerializer.Deserialize<List<RecipeModel>>(res);
+				return [];
+			}
+			catch(Exception ex)
+			{
+				logger.LogError($"Error: {ex.Message}");
+				return [];
+			}
 		}
 
+		public void MapIngredients()
+		{
+			try
+			{
+				SharedDataModel.Categories = SharedDataModel.Ingredients
+									.GroupBy(ingredient => ingredient.food_group, StringComparer.OrdinalIgnoreCase)
+									.Select(group => new CategoryModel
+									{
+										Name = group.Key,
+										Ingredients = [.. group],
+										IsExpanded = false
+									})
+									.ToList();
+			}
+			catch (Exception ex)
+			{
+				logger.LogError($"Error: {ex.Message}");
+			}
+		}
 
 	}
 }

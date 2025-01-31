@@ -6,6 +6,7 @@ namespace RecipeRecWebApp.Contracts
 	{
 		Task<bool> AddIngredientAsync(IngredientModel ingredient);
 		Task<List<IngredientModel>> GetIngredientsAsync();
+		Task<List<RecipeModel>> GetRecipes(List<IngredientModel> selectedIngredients);
 		void MapIngredients();
 	}
 }

@@ -49,5 +49,20 @@ namespace RecipeRecAPI.Services
 
 			return ingredients;
 		}
+
+		public async Task<List<RecipeModel>> GetRecipes(List<IngredientModel> selectedIngredient)
+		{
+			//Process ingredients return recipes;
+			try 
+			{
+				await Task.Delay(10000);
+				return [];
+			}
+			catch(Exception ex)
+			{
+				logger.LogError($"Error: {ex.Message}");
+			}
+			return [];
+		}
 	}
 }

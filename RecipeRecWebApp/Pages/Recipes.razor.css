@@ -56,6 +56,19 @@
     padding: 20px;
 }
 
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 4px dashed rebeccapurple;
+    border-radius: 50%;
+    animation: spin 3s linear infinite;
+    margin: 20px;
+}
+
+@keyframes spin{
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
 
 @media (max-width: 768px) {
     .grid-container {

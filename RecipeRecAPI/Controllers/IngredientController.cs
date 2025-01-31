@@ -24,5 +24,11 @@ namespace RecipeRecAPI.Controllers
 			return Ok("Ingredient Added");
 
 		}
+
+		[HttpPost("GetRecipes")]
+		public async Task<IActionResult> GetRecipes(List<IngredientModel> selectedIngredients)
+		{
+			return Ok(await ingredientService.GetRecipes(selectedIngredients));
+		}
 	}
 }

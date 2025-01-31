@@ -12,6 +12,8 @@ namespace RecipeRecWebApp.Pages
 		private string selectedCategory = string.Empty;
 		private string newIngredientName = string.Empty;
 		private bool isAddIngredientVisible = false;
+		private bool isLoading = false;
+		private bool isLoadingRecipe = false;
 
 
 		protected override void OnInitialized()
@@ -121,9 +123,11 @@ namespace RecipeRecWebApp.Pages
 		}
 		private async Task AddIngredient()
 		{
+			isLoading = true;
 			if (string.IsNullOrWhiteSpace(selectedCategory) || string.IsNullOrWhiteSpace(newIngredientName))
 			{
 				logger.LogError("All fields must be filled.");
+				isLoading = false;
 				return;
 			}
 
@@ -161,7 +165,7 @@ namespace RecipeRecWebApp.Pages
 							{
 								item.Visible = true;
 								item.Selected = true;
-								SharedDataModel.SelectedIngredients.Add(item);
+								if(!SharedDataModel.SelectedIngredients.Contains(item)) SharedDataModel.SelectedIngredients.Add(item);
 							}
 						}
 					}
@@ -174,8 +178,6 @@ namespace RecipeRecWebApp.Pages
 					logger.LogInformation("Ingredient added successfully.");
 					newIngredientName = string.Empty;
 					selectedCategory = string.Empty;
-
-
 				}
 				else
 				{
@@ -186,6 +188,22 @@ namespace RecipeRecWebApp.Pages
 			{
 				logger.LogError($"Error adding ingredient: {ex.Message}");
 			}
+			isLoading=false;
+		}
+
+		private async Task GetRecipes()
+		{
+			logger.LogInformation("Fetching Recipes...");
+			isLoadingRecipe = true;
+			try
+			{
+				SharedDataModel.Recipes = await IngredientService.GetRecipes(SharedDataModel.SelectedIngredients);
+			} 
+			catch (Exception ex)
+			{
+				logger.LogError($"Error: {ex.Message}");
+			}
+			isLoadingRecipe = false;
 		}
 	}
 }
