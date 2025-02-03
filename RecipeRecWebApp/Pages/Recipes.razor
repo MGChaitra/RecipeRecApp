@@ -14,42 +14,51 @@
             <div class="search-bar mb-3">
                 <input type="text" class="form-control" placeholder="Search Ingredients" @bind="searchTerm" @onkeyup="HandleKeyDown" />
             </div>
+            <div class="buttons-aligner">
+                <div>
+                    @if (isAddIngredientVisible)
+                    {
+                        <div class="add-ingredient-section mt-3">
+                            <h5>Add New Ingredient</h5>
+                            <div class="form-group">
+                                <label for="ingredientCategory">Select Category</label>
+                                <select id="ingredientCategory" class="form-control" @bind="selectedCategory">
+                                    <option value="">-- Select Category --</option>
+                                    @foreach (var category in SharedDataModel.Categories)
+                                    {
+                                        <option value="@category.Name">@category.Name</option>
+                                    }
+                                </select>
+                            </div>
 
-            @if (isAddIngredientVisible)
-            {
-                <div class="add-ingredient-section mt-3">
-                    <h5>Add New Ingredient</h5>
-                    <div class="form-group">
-                        <label for="ingredientCategory">Select Category</label>
-                        <select id="ingredientCategory" class="form-control" @bind="selectedCategory">
-                            <option value="">-- Select Category --</option>
-                            @foreach (var category in SharedDataModel.Categories)
-                            {
-                                <option value="@category.Name">@category.Name</option>
+                            <div class="form-group mt-3">
+                                <label for="ingredientName">Ingredient Name</label>
+                                <input id="ingredientName" type="text" class="form-control" @bind="newIngredientName" />
+                            </div>
+
+                            <button class="btn btn-primary mt-3" @onclick="AddIngredient">
+                                Add
+                            </button>
+                            @if(isLoading){
+                                <div class="spinner"></div>
                             }
-                        </select>
-                    </div>
-
-                    <div class="form-group mt-3">
-                        <label for="ingredientName">Ingredient Name</label>
-                        <input id="ingredientName" type="text" class="form-control" @bind="newIngredientName" />
-                    </div>
-
-                    <button class="btn btn-primary mt-3" @onclick="AddIngredient">Add</button>
-                    @if(isLoading){
-                        <div class="spinner"></div>
+                        
+                        </div>
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary mt-3" @onclick="ToggleAddIngredientFields">Add Ingredient</button>
                     }
                 </div>
-            }
-            else
-            {
-                <button class="btn btn-primary mt-3" @onclick="ToggleAddIngredientFields">Add Ingredient</button>
-            }
-            <div>
-                <button class="btn btn-primary mt-3" @onclick="GetRecipes">Get Recipes</button>
-                @if(isLoadingRecipe){
-                    <div class="spinner"></div>
-                }
+                <div>
+                    <button class="btn btn-primary mt-3" @onclick="GetRecipes">
+                        Get Recipes
+                    </button>
+                    @if(isLoadingRecipe){
+                        <div class="spinner"></div>
+                    }
+                    
+                </div>
             </div>
             <div class="alert alert-secondary" role="alert">
                 The only ingredients we assume you have are salt, pepper, and water.
@@ -87,6 +96,12 @@
     @if(isLoadingRecipe){
         <div class="spinner"></div>
     }
-    @* <div class="recipes"> *@
-    @* </div>  common componet accross all 3 pages to display recipes*@ 
+    <div class="recipes"> 
+        @foreach(var recipe in SharedDataModel.Recipes){
+            <div>
+                <p>@recipe.Name</p>
+                <p>@recipe.Description</p>
+            </div>
+        }
+    </div>
 </div>

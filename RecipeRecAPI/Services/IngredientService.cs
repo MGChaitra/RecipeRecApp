@@ -1,13 +1,16 @@
 ﻿using System.Text.Json;
+using Microsoft.SemanticKernel;
 using Models;
+using RecipeRec.KernelOps.Contracts;
 using RecipeRecAPI.Contracts;
 
 namespace RecipeRecAPI.Services
 {
-	public class IngredientService(IWebHostEnvironment webHostEnvironment, ILogger<IngredientService> logger) : IIngredientService
+	public class IngredientService(IWebHostEnvironment webHostEnvironment, ILogger<IngredientService> logger, IKernalProvider kernalProvider) : IIngredientService
 	{
 		private readonly IWebHostEnvironment webHostEnvironment = webHostEnvironment;
 		private readonly ILogger<IngredientService> logger = logger;
+		private readonly IKernalProvider kernalProvider = kernalProvider;
 
 		public void AddIngredient(IngredientModel newIngredient)
 		{
@@ -50,13 +53,30 @@ namespace RecipeRecAPI.Services
 			return ingredients;
 		}
 
-		public async Task<List<RecipeModel>> GetRecipes(List<IngredientModel> selectedIngredient)
+		public async Task<List<RecipeModel>> GetRecipes(List<IngredientModel> selectedIngredients)
 		{
 			//Process ingredients return recipes;
 			try 
 			{
-				await Task.Delay(10000);
-				return [];
+				var kernel = kernalProvider.CreateKernal();
+				var arguments = new KernelArguments();
+				arguments.Add("selectedIngredients",selectedIngredients);
+
+				var res = await kernel.InvokeAsync("IndexPlugin", "Get_Recipes",arguments);
+				var recipes = res.GetValue<List<RecipeModel>>();
+				recipes?.Add(new RecipeModel
+				{
+					Id = 1,
+					Name = "Egg Omelet",
+					Description = "Cooked Flat Baked Egg Omelet",
+					IsVeg = false,
+					Instructions = ["1) Egg Breaking", "2) Pan heating", "3) Pour egg"],
+					AdditionalRequiredIngredients = [],
+					RequiredIngredients = selectedIngredients,
+					ExtraSelectedIngredients = []
+				});
+
+				return recipes!;
 			}
 			catch(Exception ex)
 			{

@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipeRecWebApp", "RecipeRe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{EFA7010E-E70A-4EBC-AC35-5F5B7130F0DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeRec.AzureAiSearch", "RecipeRec.AzureAiSearch\RecipeRec.AzureAiSearch.csproj", "{88E7D355-26EF-485A-AC32-89A09D13C59B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeRec.KernelOps", "RecipeRec.KernelOps\RecipeRec.KernelOps.csproj", "{DE5C8AC5-965D-4075-AFEC-0FA9902ED7EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{EFA7010E-E70A-4EBC-AC35-5F5B7130F0DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFA7010E-E70A-4EBC-AC35-5F5B7130F0DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFA7010E-E70A-4EBC-AC35-5F5B7130F0DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88E7D355-26EF-485A-AC32-89A09D13C59B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88E7D355-26EF-485A-AC32-89A09D13C59B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88E7D355-26EF-485A-AC32-89A09D13C59B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88E7D355-26EF-485A-AC32-89A09D13C59B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE5C8AC5-965D-4075-AFEC-0FA9902ED7EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE5C8AC5-965D-4075-AFEC-0FA9902ED7EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE5C8AC5-965D-4075-AFEC-0FA9902ED7EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE5C8AC5-965D-4075-AFEC-0FA9902ED7EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

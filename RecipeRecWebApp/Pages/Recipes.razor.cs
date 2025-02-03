@@ -27,12 +27,12 @@ namespace RecipeRecWebApp.Pages
 				logger.LogError($"Error: {ex.Message}");
 			}
 		}
-		private void ToggleAddIngredientFields()
+		public void ToggleAddIngredientFields()
 		{
 			isAddIngredientVisible = !isAddIngredientVisible;
 		}
 
-		private async Task HandleKeyDown(KeyboardEventArgs e)
+		public async Task HandleKeyDown(KeyboardEventArgs e)
 		{
 			if (e.Key == "Enter")
 			{
@@ -99,7 +99,7 @@ namespace RecipeRecWebApp.Pages
 			}
 		}
 
-		private void ToggleIngredientSelection(IngredientModel ingredient)
+		public void ToggleIngredientSelection(IngredientModel ingredient)
 		{
 			try
 			{
@@ -121,7 +121,7 @@ namespace RecipeRecWebApp.Pages
 			}
 
 		}
-		private async Task AddIngredient()
+		public async Task AddIngredient()
 		{
 			isLoading = true;
 			if (string.IsNullOrWhiteSpace(selectedCategory) || string.IsNullOrWhiteSpace(newIngredientName))
@@ -191,7 +191,7 @@ namespace RecipeRecWebApp.Pages
 			isLoading=false;
 		}
 
-		private async Task GetRecipes()
+		public async Task GetRecipes()
 		{
 			logger.LogInformation("Fetching Recipes...");
 			isLoadingRecipe = true;

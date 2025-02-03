@@ -12,6 +12,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Models\Models.csproj" />
+    <ProjectReference Include="..\RecipeRec.AzureAiSearch\RecipeRec.AzureAiSearch.csproj" />
+    <ProjectReference Include="..\RecipeRec.KernelOps\RecipeRec.KernelOps.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Prompts\" />
   </ItemGroup>
 
 </Project>

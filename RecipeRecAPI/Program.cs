@@ -1,5 +1,7 @@
-using RecipeRecAPI.Contracts;
-using RecipeRecAPI.Services;
+using Microsoft.SemanticKernel;
+using RecipeRec.KernelOps.Contracts;
+using RecipeRec.KernelOps.Plugins;
+using RecipeRecAPI.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,10 +20,21 @@ builder.Services.AddCors(setUp =>
 		setUp.AllowAnyOrigin();
 	});
 });
-builder.Services.AddScoped<IIngredientService,IngredientService>();
+ServiceRegistrar.Register(builder.Services);
 
 var app = builder.Build();
-
+try
+{
+	//var createIndex = app.Services.GetRequiredService<ICreateIndex>();
+	//await createIndex.Create();
+	var kernelProvider = app.Services.GetRequiredService<IKernalProvider>();
+	var kernel = kernelProvider.CreateKernal();
+	var settings = kernelProvider.RequiredSettings();
+	var res = await kernel.InvokePromptAsync("create azure search recipe index", new(settings));
+}catch(Exception ex)
+{
+	Console.WriteLine($"Error: {ex.Message}"); ;
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

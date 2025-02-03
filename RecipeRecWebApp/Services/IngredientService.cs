@@ -49,18 +49,22 @@ namespace RecipeRecWebApp.Services
 
 		public async Task<List<RecipeModel>> GetRecipes(List<IngredientModel> selectedIngredients)
 		{
+			List<RecipeModel> recipes = [];
 			try
 			{
 				var response = await _httpClient.PostAsJsonAsync("api/Ingredient/GetRecipes", selectedIngredients);
-				var res = await response.Content.ReadAsStringAsync();
-				var list = JsonSerializer.Deserialize<List<RecipeModel>>(res);
-				return [];
+				response.EnsureSuccessStatusCode();
+
+				recipes = JsonSerializer.Deserialize<List<RecipeModel>>(
+					await response.Content.ReadAsStringAsync(),
+					new JsonSerializerOptions { PropertyNameCaseInsensitive = true}
+					) ?? [];
 			}
 			catch(Exception ex)
 			{
 				logger.LogError($"Error: {ex.Message}");
-				return [];
 			}
+			return recipes;
 		}
 
 		public void MapIngredients()
