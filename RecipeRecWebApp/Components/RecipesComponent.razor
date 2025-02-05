@@ -1,0 +1,31 @@
+﻿@using Models
+
+<div class="recipes">
+
+    @foreach (var recipe in SharedDataModel.Recipes)
+    {
+        <button @onclick="() => {OpenRecipe(recipe);}" class="custom-button">
+            <div class="recipe-details">
+                <div>
+                    <p>@recipe.Name</p>
+                    <p>@recipe.Description</p>
+                </div>
+            </div>
+            <div>
+                @if(!recipe.IsFav){
+                    <span class ="bi add-favorite-notselected" @onclick ="() => AddFavorite(recipe)" @onclick:stopPropagation =true></span>
+                }
+                else
+                {
+                    <span class="bi add-favorite-selected" @onclick=" ()=> RemoveFavorite(recipe)" @onclick:stopPropagation=true></span>
+                }
+            </div>
+        </button> 
+        @if(display.ContainsKey(recipe)){
+            <PopUpComponent display="@display[recipe]" OnClose="() => {CloseRecipe(recipe);}" RecipeModel="@recipe" Ingredients="@recipe.Ingredients"></PopUpComponent>
+        }
+    }
+</div>
+
+
+

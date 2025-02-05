@@ -1,5 +1,7 @@
-﻿using Models;
+﻿using Azure;
+using Models;
 using RecipeRecWebApp.Contracts;
+using RecipeRecWebApp.Pages;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -9,6 +11,26 @@ namespace RecipeRecWebApp.Services
 	{
 		private readonly HttpClient _httpClient = httpclient;
 		private readonly ILogger<IngredientService> logger = logger;
+
+		public async Task<List<string>> CustomInstructions(RecipeModel recipe)
+		{
+			List<string> instructions = [];
+			try
+			{
+				var res = await _httpClient.PostAsJsonAsync("api/Ingredient/CustomizeInstructions", recipe);
+				res.EnsureSuccessStatusCode();
+
+				instructions = JsonSerializer.Deserialize<List<string>>(
+					await res.Content.ReadAsStringAsync(),
+					new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+					) ?? [];
+			}
+			catch (Exception ex)
+			{
+				logger.LogError($"Error: {ex.Message}");
+			}
+			return instructions;
+		}
 
 		// Method to get ingredients from the API
 		public async Task<List<IngredientModel>> GetIngredientsAsync()
@@ -60,7 +82,7 @@ namespace RecipeRecWebApp.Services
 					new JsonSerializerOptions { PropertyNameCaseInsensitive = true}
 					) ?? [];
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				logger.LogError($"Error: {ex.Message}");
 			}

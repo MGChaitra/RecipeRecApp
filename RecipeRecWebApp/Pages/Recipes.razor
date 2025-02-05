@@ -3,11 +3,11 @@
 @inject ILogger<Recipes> logger;
 @inject IIngredientService IngredientService;
 
+@using RecipeRecWebApp.Components
 @using RecipeRecWebApp.Contracts
 @using Models
 
 <PageTitle>Recipes</PageTitle>
-
 <div class="grid-container">
     <div class="ingredients">
         <div class="container mt-3">
@@ -63,45 +63,42 @@
             <div class="alert alert-secondary" role="alert">
                 The only ingredients we assume you have are salt, pepper, and water.
             </div>
-
-            @foreach (var category in FilteredCategories)
-            {
-                <div class="category-section mb-3">
-                    <div class="category-header d-flex justify-content-between align-items-center" @onclick="() => ToggleCategory(category.Name)">
-                        <div class="d-flex align-items-center">
-                            <h5 class="m-0">@category.Name (@category.Ingredients.Count)</h5>
+            <div>
+                @foreach (var category in FilteredCategories)
+                {
+                    <div class="category-section mb-3">
+                        <div class="category-header d-flex justify-content-between align-items-center" @onclick="() => ToggleCategory(category.Name)">
+                            <div class="d-flex align-items-center">
+                                <h5 class="m-0">@category.Name (@category.Ingredients.Count)</h5>
+                            </div>
+                            <button class="btn btn-link">
+                                <i class="bi @(category.IsExpanded ? "bi-chevron-up" : "bi-chevron-down")"></i>
+                            </button>
                         </div>
-                        <button class="btn btn-link">
-                            <i class="bi @(category.IsExpanded ? "bi-chevron-up" : "bi-chevron-down")"></i>
-                        </button>
-                    </div>
-                    @if (category.IsExpanded)
-                    {
-                        <div class="ingredients-grid mt-2">
-                            @foreach (var ingredient in category.Ingredients)
-                            {
-                                if (ingredient.Visible)
+                        @if (category.IsExpanded)
+                        {
+                            <div class="ingredients-grid mt-2">
+                                @foreach (var ingredient in category.Ingredients)
                                 {
-                                    <div class="ingredient-card @(ingredient.Selected ? "selected" : "")" @onclick="() => ToggleIngredientSelection(ingredient)">
-                                        <span>@ingredient.Name</span>
-                                    </div>
+                                    if (ingredient.Visible)
+                                    {
+                                        <div class="ingredient-card @(ingredient.Selected ? "selected" : "")" @onclick="() => ToggleIngredientSelection(ingredient)">
+                                            <span>@ingredient.Name</span>
+                                        </div>
+                                    }
                                 }
-                            }
-                        </div>
-                    }
-                </div>
-            }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
         </div>
     </div>
-    @if(isLoadingRecipe){
-        <div class="spinner"></div>
-    }
-    <div class="recipes"> 
-        @foreach(var recipe in SharedDataModel.Recipes){
-            <div>
-                <p>@recipe.Name</p>
-                <p>@recipe.Description</p>
-            </div>
+    <div>
+        @if(isLoadingRecipe){
+            <div class="spinner"></div>
+        }else if(SharedDataModel.Recipes.Count>0){
+            <RecipesComponent></RecipesComponent>
         }
     </div>
 </div>

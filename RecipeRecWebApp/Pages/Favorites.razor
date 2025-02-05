@@ -1,12 +1,29 @@
 ﻿@page "/Favorites"
+@using Models
+@using RecipeRecWebApp.Components;
+@inject ILogger<Favorites> logger;
 
 <PageTitle>Favorites</PageTitle>
 
 <div class="grid-container">
 	<div class="basket">
 		<h1>Favorites</h1>
-		@* <div> foreach(favorite recipes) </div> *@
+		@foreach (var recipe in SharedDataModel.FavoriteRecipes)
+		{
+			<button @onclick="() => {OpenRecipe(recipe);}" class="custom-fav-button">
+				<div class="recipe-details">
+						<p>@recipe.Name</p>
+				</div>
+				<span class="bi add-favorite-selected" @onclick="() => DeleteSelected(recipe)" @onclick:stopPropagation=true></span>
+			</button>
+			@if (display.ContainsKey(recipe))
+			{
+				<PopUpComponent display="@display[recipe]" OnClose="() => {CloseRecipe(recipe);}" RecipeModel="@recipe" Ingredients="@recipe.Ingredients"></PopUpComponent>
+			}
+		}
 	</div>
-	@* <div class="recipes"> *@
-	@* </div>  common componet accross all 3 pages to display recipes*@ 
+	<div>
+		<RecipesComponent></RecipesComponent>
+	</div>
 </div>
+

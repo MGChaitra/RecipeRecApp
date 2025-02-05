@@ -9,7 +9,6 @@ namespace RecipeRecWebApp.Layout
             SharedDataModel.OnChanged += StateHasChanged;
 
         }
-
         public void Dispose()
         {
             SharedDataModel.OnChanged -= StateHasChanged;

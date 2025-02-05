@@ -198,6 +198,7 @@ namespace RecipeRecWebApp.Pages
 			try
 			{
 				SharedDataModel.Recipes = await IngredientService.GetRecipes(SharedDataModel.SelectedIngredients);
+				SharedDataModel.UpdateChanges();
 			} 
 			catch (Exception ex)
 			{

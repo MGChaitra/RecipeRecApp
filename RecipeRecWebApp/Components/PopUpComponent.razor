@@ -1,0 +1,27 @@
+﻿@inject IJSRuntime js
+@using Models
+@using RecipeRecWebApp.Contracts;
+@inject IIngredientService ingredientService;
+
+@if(display){
+	<div class="modal-overly">
+		<div class="modal-content">
+			@if(recipeModel.IsVeg){
+				<h6 style="color: green">Veg</h6>
+			}else{
+				<h6 style="color: red">Non-Veg</h6>
+			}
+			<div class="ingredients-row">
+				@foreach(var ingredient in Ingredients){
+					<p>@ingredient.Name,</p>
+				}
+			</div>
+			@foreach(var instruction in recipeModel.Instructions){
+				<p>@instruction</p>
+			}
+			<p>@loading</p>
+			<button class="custom-button-close" @onclick="CloseModel">Close</button>
+			<button class="custom-button" @onclick="async () => await CustomizeInstructions(recipeModel)">Customize</button>
+		</div>
+	</div>
+}

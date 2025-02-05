@@ -30,5 +30,11 @@ namespace RecipeRecAPI.Controllers
 		{
 			return Ok(await ingredientService.GetRecipes(selectedIngredients));
 		}
+
+		[HttpPost("CustomizeInstructions")]
+		public async Task<IActionResult> GetCustomInstructions(RecipeModel recipe)
+		{
+			return Ok(await ingredientService.CustomInstructions(recipe));
+		}
 	}
 }

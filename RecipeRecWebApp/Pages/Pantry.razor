@@ -1,6 +1,7 @@
 ﻿@page "/Pantry"
 @using Models
 @inject ILogger<Pantry> logger;
+@using RecipeRecWebApp.Components;
 
 <PageTitle>Pantry</PageTitle>	
 <div class="grid-container">
@@ -10,12 +11,13 @@
 		{
 			<div class="basket-item">
 				<p>@item.Name</p>
-				<button @onclick="() => { DeleteSelected(item); }" class="btn btn-danger"><i class="bi bi-trash"></i>Delete</button>
+				<span @onclick="() => { DeleteSelected(item); }" class="bi bi-trash"></span>
 			</div>
 		}
 	</div>
-	@* <div class="recipes"> *@
-	@* </div>  common componet accross all 3 pages to display recipes*@ 
+	<div>
+		<RecipesComponent></RecipesComponent>
+	</div>
 </div>
 
 

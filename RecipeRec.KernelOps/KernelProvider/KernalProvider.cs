@@ -7,6 +7,8 @@ using RecipeRec.KernelOps.Contracts;
 using RecipeRec.KernelOps.Helper;
 using RecipeRec.KernelOps.Plugins;
 using Microsoft.Extensions.Logging;
+using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
+using Microsoft.SemanticKernel.ChatCompletion;
 
 namespace RecipeRec.KernelOps.KernelProvider
 {
@@ -47,15 +49,33 @@ namespace RecipeRec.KernelOps.KernelProvider
 					new AzureKeyCredential(configuration["SearchClient:key"]!)
 					);
 
+#pragma warning disable SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+				var TextEmbeddingService = new AzureOpenAITextEmbeddingGenerationService(
+					TextEmbeddingDeploymentName!,
+					Endpoint!,
+					ApiKey!);
+#pragma warning restore SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 				//services
+
+				var OpenAiService = new AzureOpenAIChatCompletionService(
+					DeploymentName!,
+					Endpoint!,
+					ApiKey!
+					);
+
 				kernelBuilder.Services.AddLogging(logging => { logging.AddConsole(); });
+				kernelBuilder.Services.AddSingleton<AzureOpenAIChatCompletionService>(OpenAiService);
 				kernelBuilder.Services.AddSingleton<SearchClient>(searchClient);
 				kernelBuilder.Services.AddSingleton<SearchIndexClient>(searchIndexClient);
-
-				//plugins
-				var indexPlugin = new IndexPlugin(searchIndexClient,searchClient,configuration);
+#pragma warning disable SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+				kernelBuilder.Services.AddSingleton<AzureOpenAITextEmbeddingGenerationService>(TextEmbeddingService);
+#pragma warning restore SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+								 //plugins
+				var indexPlugin = new IndexPlugin(searchIndexClient,searchClient,configuration,kernelBuilder.Build());
 				kernelBuilder.Plugins.AddFromObject(indexPlugin, "IndexPlugin");
 
+				var customizePlugin = new CustomizePlugin(kernelBuilder.Build());
+				kernelBuilder.Plugins.AddFromObject(customizePlugin, "CustomizePlugin");
 			}
 			catch (Exception ex)
 			{

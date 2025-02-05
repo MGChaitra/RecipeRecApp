@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Collections.Generic;
+using System.Text.Json;
 using Microsoft.SemanticKernel;
 using Models;
 using RecipeRec.KernelOps.Contracts;
@@ -61,28 +62,41 @@ namespace RecipeRecAPI.Services
 				var kernel = kernalProvider.CreateKernal();
 				var arguments = new KernelArguments();
 				arguments.Add("selectedIngredients",selectedIngredients);
-
 				var res = await kernel.InvokeAsync("IndexPlugin", "Get_Recipes",arguments);
 				var recipes = res.GetValue<List<RecipeModel>>();
-				recipes?.Add(new RecipeModel
-				{
-					Id = 1,
-					Name = "Egg Omelet",
-					Description = "Cooked Flat Baked Egg Omelet",
-					IsVeg = false,
-					Instructions = ["1) Egg Breaking", "2) Pan heating", "3) Pour egg"],
-					AdditionalRequiredIngredients = [],
-					RequiredIngredients = selectedIngredients,
-					ExtraSelectedIngredients = []
-				});
 
-				return recipes!;
+				var recipesAugmented = await kernel.InvokeAsync("CustomizePlugin", "custom_recipes", arguments);
+				var RecipesFromGPT = recipesAugmented.GetValue<List<RecipeModel>>() ?? [];
+				foreach(var recipe in recipes!)
+				{
+					RecipesFromGPT.Add(recipe);
+				}
+				return RecipesFromGPT!;
 			}
 			catch(Exception ex)
 			{
 				logger.LogError($"Error: {ex.Message}");
 			}
 			return [];
+		}
+
+		public async Task<List<string>> CustomInstructions(RecipeModel recipe)
+		{
+			List<string> instructions = [];
+			try
+			{
+				var kernel = kernalProvider.CreateKernal();
+				var arguments = new KernelArguments();
+				arguments.Add("instructions", recipe.Instructions);
+
+				var res = await kernel.InvokeAsync("CustomizePlugin", "Custom_instructions", arguments);
+				instructions = res.GetValue<List<string>>() ?? [];
+			}
+			catch(Exception ex)
+			{
+				logger.LogError($"Error: {ex.Message}");
+			}
+			return instructions;
 		}
 	}
 }

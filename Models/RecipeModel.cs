@@ -1,14 +1,27 @@
-﻿namespace Models
+﻿using System.Text.Json.Serialization;
+
+namespace Models
 {
 	public class RecipeModel
 	{
+		[JsonPropertyName("Id")]
 		public int Id { get; set; }
+
+		[JsonPropertyName("Name")]
 		public string Name { get; set; } = string.Empty;
+
+		[JsonPropertyName("Description")]
 		public string Description { get; set; } = string.Empty;
-		public List<IngredientModel> RequiredIngredients { get; set; } = [];
+
+		[JsonPropertyName("Ingredients")]
+		public List<IngredientModel> Ingredients { get; set; } = [];
+
+		[JsonPropertyName("Instructions")]
 		public List<string> Instructions { get; set; } = [];
+
+		[JsonPropertyName("IsVeg")]
 		public bool IsVeg { get; set; } = true;
-		public List<IngredientModel> ExtraSelectedIngredients { get; set; } = []; //selected in pantry but not in recipe
-		public List<IngredientModel> AdditionalRequiredIngredients { get; set; } = []; //required in recipe but not present in pantry
+
+		public bool IsFav = false;
 	}
 }
