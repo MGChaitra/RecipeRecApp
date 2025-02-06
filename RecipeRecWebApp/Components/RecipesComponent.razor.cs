@@ -30,20 +30,34 @@ namespace RecipeRecWebApp.Components
 
 		private void AddFavorite(RecipeModel recipe)
 		{
-			recipe.IsFav = true;
-			SharedDataModel.FavoriteRecipes.Add(recipe);
-			SharedDataModel.UpdateChanges();
-			StateHasChanged();
+			try
+			{
+				recipe.IsFav = true;
+				SharedDataModel.FavoriteRecipes.Add(recipe);
+				SharedDataModel.UpdateChanges();
+				StateHasChanged();
+			}
+			catch(Exception ex)
+			{
+				Console.WriteLine($"Error: {ex.Message}");
+			}
 		}
 
 		private void RemoveFavorite(RecipeModel recipe)
 		{
-			recipe.IsFav = false;
-			if (SharedDataModel.FavoriteRecipes.Contains(recipe)) 
-			{ 
-				SharedDataModel.FavoriteRecipes.Remove(recipe);
-				SharedDataModel.UpdateChanges();
-				StateHasChanged();
+			try
+			{
+				recipe.IsFav = false;
+				if (SharedDataModel.FavoriteRecipes.Contains(recipe))
+				{
+					SharedDataModel.FavoriteRecipes.Remove(recipe);
+					SharedDataModel.UpdateChanges();
+					StateHasChanged();
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error: {ex.Message}");
 			}
 		}
 	}

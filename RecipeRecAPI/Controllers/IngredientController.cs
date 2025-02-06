@@ -20,6 +20,10 @@ namespace RecipeRecAPI.Controllers
 		[HttpPost]
 		public IActionResult AddIngredient([FromBody] IngredientModel newIngredient)
 		{
+			if(String.IsNullOrEmpty(newIngredient.Name) || newIngredient == null)
+			{
+				return BadRequest("Ingredient is null");
+			}
 			ingredientService.AddIngredient(newIngredient);
 			return Ok("Ingredient Added");
 
@@ -34,6 +38,10 @@ namespace RecipeRecAPI.Controllers
 		[HttpPost("CustomizeInstructions")]
 		public async Task<IActionResult> GetCustomInstructions(RecipeModel recipe)
 		{
+			if (recipe == null)
+			{
+				return BadRequest("recipe is null");
+			}
 			return Ok(await ingredientService.CustomInstructions(recipe));
 		}
 	}

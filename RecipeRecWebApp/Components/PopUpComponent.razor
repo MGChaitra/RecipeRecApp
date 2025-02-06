@@ -11,11 +11,13 @@
 			}else{
 				<h6 style="color: red">Non-Veg</h6>
 			}
+			<h6>Ingredients</h6>
 			<div class="ingredients-row">
 				@foreach(var ingredient in Ingredients){
 					<p>@ingredient.Name,</p>
 				}
 			</div>
+			<h6>Instructions</h6>
 			@foreach(var instruction in recipeModel.Instructions){
 				<p>@instruction</p>
 			}

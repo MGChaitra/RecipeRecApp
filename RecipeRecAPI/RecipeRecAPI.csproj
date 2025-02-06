@@ -16,8 +16,4 @@
     <ProjectReference Include="..\RecipeRec.KernelOps\RecipeRec.KernelOps.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Prompts\" />
-  </ItemGroup>
-
 </Project>

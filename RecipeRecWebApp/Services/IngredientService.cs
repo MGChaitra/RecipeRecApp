@@ -1,12 +1,15 @@
-﻿using Azure;
-using Models;
+﻿using Models;
 using RecipeRecWebApp.Contracts;
-using RecipeRecWebApp.Pages;
 using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace RecipeRecWebApp.Services
 {
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="httpclient"></param>
+	/// <param name="logger"></param>
 	public class IngredientService(HttpClient httpclient, ILogger<IngredientService> logger) : IIngredientService
 	{
 		private readonly HttpClient _httpClient = httpclient;
@@ -32,7 +35,10 @@ namespace RecipeRecWebApp.Services
 			return instructions;
 		}
 
-		// Method to get ingredients from the API
+		/// <summary>
+		/// Async Method to get ingredients from the API
+		/// </summary>
+		/// <returns>List of Ingredients</returns>
 		public async Task<List<IngredientModel>> GetIngredientsAsync()
 		{
 			List<IngredientModel> ingredients = [];
@@ -46,13 +52,16 @@ namespace RecipeRecWebApp.Services
 			}
 			catch (Exception ex)
 			{
-				// Log the error or handle it appropriately
 				logger.LogError($"Error: {ex.Message}");
 			}
 			return ingredients;
 		}
 
-		// Method to add a new ingredient via the API
+		/// <summary>
+		///	Async Method to add a new ingredient via the API
+		/// </summary>
+		/// <param name="ingredient"></param>
+		/// <returns>bool - did ingredient got added</returns>
 		public async Task<bool> AddIngredientAsync(IngredientModel ingredient)
 		{
 			try
@@ -62,7 +71,6 @@ namespace RecipeRecWebApp.Services
 			}
 			catch (Exception ex)
 			{
-				// Log the error or handle it appropriately
 				logger.LogError($"Error: {ex.Message}");
 				return false;
 			}

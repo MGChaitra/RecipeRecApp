@@ -22,8 +22,12 @@ namespace RecipeRec.KernelOps.KernelProvider
 				//configuration
 				var configuration = ConfigurationHelper.Configuration;
 
-				//AI Models
-				string? DeploymentName = configuration["AzureAiService:model"], Endpoint = configuration["AzureAiService:endpoint"], ApiKey = configuration["AzureAiService:key"];
+				//Adding AI Models
+				string? DeploymentName = configuration["AzureAiService:model"], 
+						Endpoint = configuration["AzureAiService:endpoint"],
+						ApiKey = configuration["AzureAiService:key"];
+				
+				
 				kernelBuilder.AddAzureOpenAIChatCompletion(
 					DeploymentName!,
 					Endpoint!,
@@ -49,13 +53,12 @@ namespace RecipeRec.KernelOps.KernelProvider
 					new AzureKeyCredential(configuration["SearchClient:key"]!)
 					);
 
-#pragma warning disable SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+				#pragma warning disable SKEXP0010 
 				var TextEmbeddingService = new AzureOpenAITextEmbeddingGenerationService(
 					TextEmbeddingDeploymentName!,
 					Endpoint!,
 					ApiKey!);
-#pragma warning restore SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-				//services
+				#pragma warning restore SKEXP0010 
 
 				var OpenAiService = new AzureOpenAIChatCompletionService(
 					DeploymentName!,
@@ -63,18 +66,20 @@ namespace RecipeRec.KernelOps.KernelProvider
 					ApiKey!
 					);
 
+				//service;
 				kernelBuilder.Services.AddLogging(logging => { logging.AddConsole(); });
 				kernelBuilder.Services.AddSingleton<AzureOpenAIChatCompletionService>(OpenAiService);
 				kernelBuilder.Services.AddSingleton<SearchClient>(searchClient);
 				kernelBuilder.Services.AddSingleton<SearchIndexClient>(searchIndexClient);
-#pragma warning disable SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+				#pragma warning disable SKEXP0010 
 				kernelBuilder.Services.AddSingleton<AzureOpenAITextEmbeddingGenerationService>(TextEmbeddingService);
-#pragma warning restore SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-								 //plugins
+				#pragma warning restore SKEXP0010
+
+				//plugins
 				var indexPlugin = new IndexPlugin(searchIndexClient,searchClient,configuration,kernelBuilder.Build());
 				kernelBuilder.Plugins.AddFromObject(indexPlugin, "IndexPlugin");
 
-				var customizePlugin = new CustomizePlugin(kernelBuilder.Build());
+				var customizePlugin = new CustomizePlugin(kernelBuilder.Build(),configuration);
 				kernelBuilder.Plugins.AddFromObject(customizePlugin, "CustomizePlugin");
 			}
 			catch (Exception ex)
@@ -84,10 +89,13 @@ namespace RecipeRec.KernelOps.KernelProvider
 			return kernelBuilder.Build();
 		}
 
-		public PromptExecutionSettings RequiredSettings()
+		public AzureOpenAIPromptExecutionSettings RequiredSettings()
 		{
-			PromptExecutionSettings settings = new() { FunctionChoiceBehavior = FunctionChoiceBehavior.Required() };
-			return settings;
+			AzureOpenAIPromptExecutionSettings promptExecutionSettings = new AzureOpenAIPromptExecutionSettings
+			{
+				FunctionChoiceBehavior = FunctionChoiceBehavior.Required()
+			};
+			return promptExecutionSettings;
 		}
 
 	}

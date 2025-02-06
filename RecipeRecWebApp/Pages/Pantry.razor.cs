@@ -7,7 +7,14 @@ namespace RecipeRecWebApp.Pages
 
 		protected override void OnInitialized()
 		{
-			StateHasChanged();
+			try
+			{
+				StateHasChanged();
+			}
+			catch (Exception ex)
+			{
+				logger.LogError($"Error: {ex.Message}");
+			}
 		}
 
 		public void DeleteSelected(IngredientModel item)

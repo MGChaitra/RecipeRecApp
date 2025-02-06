@@ -57,9 +57,12 @@
                     @if(isLoadingRecipe){
                         <div class="spinner"></div>
                     }
-                    
                 </div>
             </div>
+            @if (SharedDataModel.SelectedIngredients.Count == 0)
+            {
+                <p style="color: red">@selectMessage</p>
+            }
             <div class="alert alert-secondary" role="alert">
                 The only ingredients we assume you have are salt, pepper, and water.
             </div>

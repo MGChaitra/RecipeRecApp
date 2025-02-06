@@ -25,8 +25,6 @@ ServiceRegistrar.Register(builder.Services);
 var app = builder.Build();
 try
 {
-	//var createIndex = app.Services.GetRequiredService<ICreateIndex>();
-	//await createIndex.Create();
 	var kernelProvider = app.Services.GetRequiredService<IKernalProvider>();
 	var kernel = kernelProvider.CreateKernal();
 	var settings = kernelProvider.RequiredSettings();

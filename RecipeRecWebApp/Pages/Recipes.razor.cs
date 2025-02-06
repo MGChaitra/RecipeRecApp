@@ -8,7 +8,7 @@ namespace RecipeRecWebApp.Pages
 	{
 		private string searchTerm = string.Empty;
 		private List<CategoryModel> FilteredCategories = [];
-
+		private string selectMessage = "";
 		private string selectedCategory = string.Empty;
 		private string newIngredientName = string.Empty;
 		private bool isAddIngredientVisible = false;
@@ -34,9 +34,16 @@ namespace RecipeRecWebApp.Pages
 
 		public async Task HandleKeyDown(KeyboardEventArgs e)
 		{
-			if (e.Key == "Enter")
+			try
 			{
-				await FilterIngredients();
+				if (e.Key == "Enter")
+				{
+					await FilterIngredients();
+				}
+			}
+			catch (Exception ex)
+			{
+				logger.LogError($"Error: {ex.Message}");
 			}
 		}
 
@@ -124,15 +131,16 @@ namespace RecipeRecWebApp.Pages
 		public async Task AddIngredient()
 		{
 			isLoading = true;
-			if (string.IsNullOrWhiteSpace(selectedCategory) || string.IsNullOrWhiteSpace(newIngredientName))
-			{
-				logger.LogError("All fields must be filled.");
-				isLoading = false;
-				return;
-			}
 
 			try
 			{
+				if (string.IsNullOrWhiteSpace(selectedCategory) || string.IsNullOrWhiteSpace(newIngredientName))
+				{
+					logger.LogError("All fields must be filled.");
+					isLoading = false;
+					return;
+				}
+
 				var newId = SharedDataModel.Ingredients.Any()
 					? SharedDataModel.Ingredients.Max(i => i.Id) + 1
 					: 1;
@@ -197,8 +205,15 @@ namespace RecipeRecWebApp.Pages
 			isLoadingRecipe = true;
 			try
 			{
-				SharedDataModel.Recipes = await IngredientService.GetRecipes(SharedDataModel.SelectedIngredients);
-				SharedDataModel.UpdateChanges();
+				if (SharedDataModel.SelectedIngredients.Count > 0)
+				{
+					SharedDataModel.Recipes = await IngredientService.GetRecipes(SharedDataModel.SelectedIngredients);
+					SharedDataModel.UpdateChanges();
+				}
+				else
+				{
+					selectMessage = "Select ingredients to proceed.";
+				}
 			} 
 			catch (Exception ex)
 			{

@@ -1,10 +1,11 @@
 ﻿using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
 
 namespace RecipeRec.KernelOps.Contracts
 {
 	public interface IKernalProvider
 	{
 		Kernel CreateKernal();
-		PromptExecutionSettings RequiredSettings();
+		AzureOpenAIPromptExecutionSettings RequiredSettings();
 	}
 }

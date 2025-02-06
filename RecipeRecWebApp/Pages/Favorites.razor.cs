@@ -7,13 +7,27 @@ namespace RecipeRecWebApp.Pages
 		private Dictionary<RecipeModel, bool> display = [];
 		protected override void OnInitialized()
 		{
-			SharedDataModel.OnChanged += StateHasChanged;
-			StateHasChanged();
+			try
+			{
+				SharedDataModel.OnChanged += StateHasChanged;
+				StateHasChanged();
+			}
+			catch (Exception ex)
+			{
+				logger.LogError($"Error: {ex.Message}");
+			}
 		}
 
 		public void Dispose()
 		{
-			SharedDataModel.OnChanged -= StateHasChanged;
+			try
+			{
+				SharedDataModel.OnChanged -= StateHasChanged;
+			}
+			catch (Exception ex)
+			{
+				logger.LogError($"Error: {ex.Message}");
+			}
 		}
 
 		public void DeleteSelected(RecipeModel item)
@@ -34,12 +48,26 @@ namespace RecipeRecWebApp.Pages
 		}
 		private void OpenRecipe(RecipeModel recipe)
 		{
-			display[recipe] = true;
+			try
+			{
+				display[recipe] = true;
+			}
+			catch (Exception ex)
+			{
+				logger.LogError($"Error: {ex.Message}");
+			}
 		}
 
 		private void CloseRecipe(RecipeModel recipe)
 		{
-			display[recipe] = false;
+			try
+			{
+				display[recipe] = false;
+			}
+			catch (Exception ex)
+			{
+				logger.LogError($"Error: {ex.Message}");
+			}
 		}
 	}
 }
