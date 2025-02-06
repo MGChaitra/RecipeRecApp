@@ -1,9 +1,100 @@
 ﻿@page "/Favorites"
+@using Models
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject ILogger<Favorites> logger;
 
 <PageTitle>Favorites</PageTitle>
 
 <div class="grid-container">
-	<div class="basket">
-		<h1>Favorites</h1>
-	</div>
+    <div class="basket">
+        <h1>Favorite Recipes</h1>
+
+        @if (SharedDataModel.FavoriteRecipes.Any())
+        {
+            @foreach (var recipe in SharedDataModel.FavoriteRecipes)
+            {
+                <div class="recipe-card">
+                    <h3>@recipe.recipe_name</h3>
+                    <p><strong>Ingredients:</strong> @recipe.ingredients</p>
+                    <p><strong>Instructions:</strong>@recipe.instructions</p>
+                    <div class="card-buttons">
+                        <button class="btn btn-info" @onclick="() => GetRecipeSummary(recipe)">
+                            Know More
+                        </button>
+                        <button class="btn btn-danger" @onclick="() => RemoveFromFavorites(recipe)">
+                            Remove
+                        </button>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No favorite recipes added yet.</p>
+        }
+    </div>
 </div>
+
+@if (showSummaryModal)
+{
+    <div class="modal-backdrop">
+        <div class="modal-content">
+            <h3>@selectedRecipe?.recipe_name</h3>
+            <p><strong>Ingredients:</strong> @selectedRecipe?.ingredients</p>
+            <p><strong>Summary:</strong> @selectedRecipeSummary</p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" @onclick="CloseModal">Close</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private RecipeModel? selectedRecipe;
+    private string? selectedRecipeSummary;
+    private bool showSummaryModal = false;
+    protected override void OnInitialized()
+    {
+        StateHasChanged();
+    }
+
+    private void RemoveFromFavorites(RecipeModel recipe)
+    {
+       
+        SharedDataModel.FavoriteRecipes.Remove(recipe);
+        StateHasChanged();
+        SharedDataModel.UpdateChanges();
+    }
+
+    private async Task GetRecipeSummary(RecipeModel recipe)
+    {
+        selectedRecipe = recipe;
+        selectedRecipeSummary = null;
+        showSummaryModal = true;
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/RecipeCustom/summarize", new List<RecipeModel> { recipe });
+
+            if (response.IsSuccessStatusCode)
+            {
+                var summaryList = await response.Content.ReadFromJsonAsync<List<SummarizedRecipeModel>>();
+                selectedRecipeSummary = summaryList?.FirstOrDefault()?.Summary;
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError($"Error fetching summary: {ex.Message}");
+        }
+
+        StateHasChanged();
+    }
+
+    private void CloseModal()
+    {
+        showSummaryModal = false;
+        selectedRecipe = null;
+        selectedRecipeSummary = null;
+    }
+}

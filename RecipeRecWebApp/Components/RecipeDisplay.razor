@@ -1,0 +1,70 @@
+﻿@using RecipeRecWebApp.Services
+@inject RecipeStateService RecipeState
+@inject HttpClient Http
+@inject ILogger<RecipeDisplay> logger;
+@using Models
+@inject IJSRuntime JS
+<h3>Recipe Display</h3>
+<script src="js/script.js"></script>
+<div class="grid-container">
+    <div class="basket">
+        
+            <button @onclick="HandleSearchClick" class="btn btn-primary mt-3">
+                <i class="bi bi-search"></i> Search Recipe
+            </button>
+    
+        @if(showWarning){
+            <span class="text-danger"> Please Select the Ingredient to Search the Recipe</span>
+
+        }
+    </div>
+</div>
+
+@if (isLoading)
+{
+    <p>Loading recipes...</p>
+}
+
+@if (RecipeState.HasRecipes)
+{
+    <h2>Available Recipes</h2>
+    <div class="recipe-slider-container">
+        <button class="scroll-btn left" @onclick="ScrollLeft">
+            ⬅️
+        </button>
+
+        <div class="recipe-cards" @ref="recipeCardContainer">
+            @foreach (var recipe in RecipeState.Recipes)
+            {
+                <div class="recipe-card">
+                    <h3>@recipe.recipe_name</h3>
+                    <p><strong>Ingredients:</strong> @recipe.ingredients</p>
+                    <p><strong>Instructions:</strong> @recipe.instructions</p>
+                    <button class="btn btn-info mt-2" @onclick="() => GetRecipeSummary(recipe)">
+                        Know More
+                    </button>
+                </div>
+            }
+        </div>
+
+        <button class="scroll-btn right" @onclick="ScrollRight">
+            ➡️
+        </button>
+    </div>
+}
+@if (showSummaryModal)
+{
+    <div class="modal-backdrop">
+        <div class="modal-content">
+            <h3>@selectedRecipe?.recipe_name</h3>
+            <p><strong>Ingredients:</strong> @selectedRecipe?.ingredients</p>
+            <p><strong>Summary:</strong> @selectedRecipeSummary</p>
+            <div class="modal-buttons">
+                <button class="btn btn-success" @onclick="AddToFavorites">Favorite</button>
+                <button class="btn btn-secondary" @onclick="CloseModal">Close</button>
+            </div>
+        </div>
+    </div>
+}
+
+

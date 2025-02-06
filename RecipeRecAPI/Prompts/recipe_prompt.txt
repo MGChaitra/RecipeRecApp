@@ -1,0 +1,7 @@
+You are an expert chef. Enhance the following recipe by providing a detailed, step-by-step cooking guide with additional cooking tips.
+
+Recipe Name: {recipe_name}
+Ingredients: {ingredients}
+Instructions: {instructions}
+
+Please provide a user-friendly, enhanced version of the instructions, including tips on flavor enhancement, cooking methods, and possible variations.

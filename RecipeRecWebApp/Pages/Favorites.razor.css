@@ -1,16 +1,145 @@
-﻿.basket {
-    padding: 20px;
-    background-image: linear-gradient(180deg, rgb(135, 206, 250) 0%, #dda0dd 70%);
-    height: 100vh;
-    width: 50vh;
-    overflow-y: scroll;
-    border: solid black;
+﻿body, html {
+    overflow: hidden; /* Prevent scrolling on both axes */
+    height: 100%;
+    margin: 0;
 }
 
 .grid-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    html, body
+
+{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    height: 100vh; /* Make sure the grid takes full height */
+    width: 100vw; /* Make sure the grid takes full width */
     align-items: center;
     justify-items: center;
+    overflow: hidden; /* Prevent scrolling in the grid container */
+}
+
+.basket {
+    padding: 20px;
+    background-image: linear-gradient(180deg, rgb(135, 206, 250) 0%, #dda0dd 70%);
+    width: 100%; /* Ensure it fits the screen width */
+    height: 100%; /* Ensure it fits the screen height */
+    overflow: hidden; /* Prevent scrolling */
+    border: solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.recipe-card {
+    width: 700px; /* Fixed width */
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: white; /* White background */
+    max-width: 100%; /* Prevent overflow */
+    box-sizing: border-box; /* Include padding in the width calculation */
+    margin-top: 20px; /* Ensure space between cards */
+
+    height: auto; /* Height adjusts based on content */
+}
+
+
+.card-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
     justify-content: center;
+    overflow: hidden; /* Prevent scroll in the modal backdrop */
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+grid-template-columns: 1fr;
+height: 100vh;
+width: 100vw;
+align-items: center;
+justify-items: center;
+overflow: hidden; /* Ensure no scrolling in grid container */
+}
+
+.basket {
+    padding: 20px;
+    background-image: linear-gradient(180deg, rgb(135, 206, 250) 0%, #dda0dd 70%);
+    height: 100%; /* Ensure content doesn't overflow vertically */
+    width: 100%; /* Ensure content doesn't overflow horizontally */
+    overflow: hidden; /* Prevent scrolling */
+    border: solid black;
+}
+
+.recipe-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Ensure no scroll in the backdrop */
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 50%;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
 }

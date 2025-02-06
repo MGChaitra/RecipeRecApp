@@ -1,5 +1,6 @@
 ﻿@page "/Pantry"
 @using Models
+@using RecipeRecWebApp.Components
 @inject ILogger<Pantry> logger;
 
 <PageTitle>Pantry</PageTitle>	
@@ -13,7 +14,10 @@
 				<button @onclick="() => { DeleteSelected(item); }" class="btn btn-danger"><i class="bi bi-trash"></i>Delete</button>
 			</div>
 		}
+		
 	</div>
+
+ <div class="recipes">
+        <RecipeDisplay></RecipeDisplay>
+    </div>
 </div>
-
-

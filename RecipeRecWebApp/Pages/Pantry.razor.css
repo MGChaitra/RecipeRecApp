@@ -31,16 +31,20 @@
     top: -1px;
     background-size: cover;
 }
+
 .grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    align-items: center;
-    justify-items: center;
-    justify-content: center;
+    height: 100vh;
+}
+.recipes {
+    padding: 20px;
 }
 
 
+
 @media (max-width: 768px) {
+
     .basket{
         width: 100%;
     }

@@ -4,6 +4,7 @@
 @inject IIngredientService IngredientService;
 @using RecipeRecWebApp.Contracts
 @using Models
+@using RecipeRecWebApp.Components
 <PageTitle>Recipes</PageTitle>
 
 <div class="grid-container">
@@ -77,5 +78,6 @@
         </div>
     </div>
     <div class="recipes">
+        <RecipeDisplay></RecipeDisplay>
     </div>
 </div>
