@@ -17,5 +17,6 @@ namespace Models
         public string ingredients { get; set; }
         [JsonPropertyName("instructions")]
         public string instructions { get; set; }
+ 
     }
 }

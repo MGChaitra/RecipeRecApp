@@ -1,7 +1,9 @@
 ﻿@using RecipeRecWebApp.Services
-@inject RecipeStateService RecipeState
+@using RecipeRecWebApp.Contracts
+@inject IRecipeStateService RecipeState
 @inject HttpClient Http
 @inject ILogger<RecipeDisplay> logger;
+@inject IRecipeSearchService RecipeSearchService
 @using Models
 @inject IJSRuntime JS
 <h3>Recipe Display</h3>

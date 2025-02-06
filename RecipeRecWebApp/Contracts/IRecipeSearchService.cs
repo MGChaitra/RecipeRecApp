@@ -4,6 +4,8 @@ namespace RecipeRecWebApp.Contracts
 {
     public interface IRecipeSearchService
     {
-        void SendIngredients(IngredientModel ingredient);
+        Task<List<RecipeModel>> SearchRecipesAsync(List<string> ingredients);
+        Task<List<RecipeModel>> GenerateRecipesAsync(List<string> ingredients);
+        Task<string?> SummarizeRecipeAsync(RecipeModel recipe);
     }
 }

@@ -31,14 +31,14 @@ public class AzureAISearchService
                 new SearchableField("recipe_name") { IsFacetable = true },
                 new SearchableField("ingredients") { IsFilterable=true },
                 new SearchableField("instructions"),
-                new SearchField("embedding", SearchFieldDataType.Collection(SearchFieldDataType.Double))
+                new SearchField("embedding", SearchFieldDataType.Collection(SearchFieldDataType.Double)),
+
+
             }
         };
 
         await _indexClient.CreateOrUpdateIndexAsync(definition);
     }
-
-
 
     /// <summary>
     /// Searches for recipes in Azure AI Search.
@@ -53,10 +53,7 @@ public class AzureAISearchService
                 QueryType = SearchQueryType.Full,
                 SearchMode = SearchMode.All,
                 Size = 4,
-                VectorSearch=new VectorSearchOptions()
-                
-                
-               
+                            
             };
             var response = await _searchClient.SearchAsync<RecipeModel>(query,searchOptions);
             var recipes = response.Value.GetResults().Select(x => x.Document).ToList();

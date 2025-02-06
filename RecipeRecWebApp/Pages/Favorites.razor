@@ -1,5 +1,7 @@
 ﻿@page "/Favorites"
 @using Models
+@using RecipeRecWebApp.Contracts
+@inject IRecipeSearchService RecipeSearchService
 @inject NavigationManager Navigation
 @inject HttpClient Http
 @inject ILogger<Favorites> logger;
@@ -50,51 +52,4 @@
     </div>
 }
 
-@code {
-    private RecipeModel? selectedRecipe;
-    private string? selectedRecipeSummary;
-    private bool showSummaryModal = false;
-    protected override void OnInitialized()
-    {
-        StateHasChanged();
-    }
 
-    private void RemoveFromFavorites(RecipeModel recipe)
-    {
-       
-        SharedDataModel.FavoriteRecipes.Remove(recipe);
-        StateHasChanged();
-        SharedDataModel.UpdateChanges();
-    }
-
-    private async Task GetRecipeSummary(RecipeModel recipe)
-    {
-        selectedRecipe = recipe;
-        selectedRecipeSummary = null;
-        showSummaryModal = true;
-
-        try
-        {
-            var response = await Http.PostAsJsonAsync("api/RecipeCustom/summarize", new List<RecipeModel> { recipe });
-
-            if (response.IsSuccessStatusCode)
-            {
-                var summaryList = await response.Content.ReadFromJsonAsync<List<SummarizedRecipeModel>>();
-                selectedRecipeSummary = summaryList?.FirstOrDefault()?.Summary;
-            }
-        }
-        catch (Exception ex)
-        {
-            logger.LogError($"Error fetching summary: {ex.Message}");
-        }
-
-        StateHasChanged();
-    }
-
-    private void CloseModal()
-    {
-        showSummaryModal = false;
-        selectedRecipe = null;
-        selectedRecipeSummary = null;
-    }
-}
