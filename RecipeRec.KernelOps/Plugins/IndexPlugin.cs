@@ -59,27 +59,24 @@ namespace RecipeRec.KernelOps.Plugins
 
 		[KernelFunction("Get_Recipes")]
 		[Description("returns the list of recipes based on provided list of ingredients ")]
-		public async Task<List<RecipeModel>> GetRecipes(List<IngredientModel> selectedIngredients)
+		public async Task<List<RecipeModel>> GetRecipes(List<string> expandedIngredients)
 		{
 			List<RecipeModel> returnList = [];
 			try
 			{
+				int N = Convert.ToInt32(configuration["SearchClient:RecipeNumber"]);
+				Response<long> countResponse = await searchClient.GetDocumentCountAsync();
+				int TotalCount = (int)Math.Min(countResponse.Value, N);
 
-				string ingredients = "";
-				foreach (var ingredient in selectedIngredients)
-				{
-					ingredients += $"{ingredient.Name}, ";
-				}
+				string QueryIngredient = string.Join(", ", expandedIngredients);
 
 				#pragma warning disable SKEXP0010 
-				var IngredientsEmbedding = await kernel.GetRequiredService<AzureOpenAITextEmbeddingGenerationService>().GenerateEmbeddingsAsync([ingredients]);
+				var IngredientsEmbedding = await kernel.GetRequiredService<AzureOpenAITextEmbeddingGenerationService>().GenerateEmbeddingsAsync([QueryIngredient]);
 				#pragma warning restore SKEXP0010 
 
-				var options = new SearchOptions()
-				{
-					IncludeTotalCount = true
-				};
-				var results = await searchClient.SearchAsync<SearchDocument>("*", options);
+
+				string? filterQuery = $"Ingredients/any(i: {string.Join(" or ",expandedIngredients.Select(ing => $"i eq '{ing.ToLower()}'"))})";
+
 
 				SearchOptions searchOptions = new SearchOptions()
 				{
@@ -87,9 +84,11 @@ namespace RecipeRec.KernelOps.Plugins
 					VectorSearch = new()
 					{
 						Queries = { new VectorizedQuery(IngredientsEmbedding[0]) { KNearestNeighborsCount = 4, Fields = { "RecipeEmbeddings" } } }
-					}
+					},
+					Size = TotalCount
+					//Filter = filterQuery
 				};
-				var result = await searchClient.SearchAsync<SearchDocument>(ingredients.ToString(), options: searchOptions);
+				var result = await searchClient.SearchAsync<SearchDocument>(QueryIngredient, options: searchOptions);
 
 				var SearchResponse = result.GetRawResponse().Content.ToString();
 				JsonObject jsonValue = JsonSerializer.Deserialize<JsonObject>(SearchResponse)!;

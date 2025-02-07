@@ -62,6 +62,29 @@
     background-size: cover;
 }
 
+.buttons-aligner {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 50px;
+}
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 4px dashed rebeccapurple;
+    border-radius: 50%;
+    animation: spin 3s linear infinite;
+    margin: 20px;
+}
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
 .grid-container {
     display: grid;
     grid-template-columns: 0.6fr 10fr;

@@ -1,15 +1,15 @@
 ﻿act as a recipe provider in list of json format based on field values given below and for given Ingredients: {{$RequiredIngredients}}: 
-```Recipe class fields which act as json keys, you are here to generate respecive key's values starts
+```Recipe class fields which act as json keys, you are here to generate respective key's values starts
 		public int Id
 		public string Name
-		public string Description
+		public string Description [Append Description with (AI generated recipe) mark]
 		public List<IngredientModel> Ingredients = [provide ingredients needed without quantifying them here Note that ingredients are not just strings, they have their attributes mentioned in next line, find recipe based on {{$RequiredIngredients}}];
 ```Ingredient Model attributes start:
 		public int Id = 'starts from 1 for each recipe'
-		public string name = 'ingredient name'; [note that name should be present in {{$RequiredIngredients}}]
+		public string name = 'ingredient name in lower case only'; [ingredients based on {{$RequiredIngredients}} and other required ingredients]
 		public string food_group = 'specifies which group the ingredient belong to, Eg: Egg, Spices, milk and derivates, pulses...';
 ```Ingredient Model attributes end;
-		public List<string> Instructions = [provide instructions to prepare the recipe along with instruction numbers for each instruction];
+		public List<string> Instructions = [provide instructions to prepare the recipe along with instruction numbers strictly for each instruction];
 		public bool IsVeg = true/false based on ingedients;
 ```recipe class fields ends;
 try getting most recipe with provided Ingredients, in case no such recipe exists return empty list only

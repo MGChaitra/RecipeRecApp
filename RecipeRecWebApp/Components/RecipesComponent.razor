@@ -1,5 +1,5 @@
 ﻿@using Models
-
+@inject ILogger<RecipesComponent> logger;
 <div class="recipes">
 
     @foreach (var recipe in SharedDataModel.Recipes)

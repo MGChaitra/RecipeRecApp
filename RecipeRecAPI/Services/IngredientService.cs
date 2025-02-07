@@ -56,28 +56,39 @@ namespace RecipeRecAPI.Services
 
 		public async Task<List<RecipeModel>> GetRecipes(List<IngredientModel> selectedIngredients)
 		{
-			//Process ingredients return recipes;
-			try 
+			List<RecipeModel> recipesFromIndex = [];
+			try
 			{
-				var kernel = kernalProvider.CreateKernal();
-				var arguments = new KernelArguments();
-				arguments.Add("selectedIngredients",selectedIngredients);
-				var res = await kernel.InvokeAsync("IndexPlugin", "Get_Recipes",arguments);
-				var recipes = res.GetValue<List<RecipeModel>>();
 
+				List<string> expandedIngredients = selectedIngredients.SelectMany(ing => new List<string> { ing.Name.ToLower(), $"{ing.Name.ToLower()}s" }).Distinct().ToList();
+
+				var kernel = kernalProvider.CreateKernal();
+
+				var arguments = new KernelArguments();
+				arguments.Add("expandedIngredients", expandedIngredients);
+
+				var res = await kernel.InvokeAsync("IndexPlugin", "Get_Recipes", arguments);
+				recipesFromIndex = res.GetValue<List<RecipeModel>>() ?? [];
+				logger.LogWarning($"Recipes from Index: {recipesFromIndex.Count}");
+
+				List<RecipeModel> RecipesFromAI = [];
+				
+				arguments.Clear();
+				arguments.Add("selectedIngredients", selectedIngredients);
 				var recipesAugmented = await kernel.InvokeAsync("CustomizePlugin", "custom_recipes", arguments);
-				var RecipesFromGPT = recipesAugmented.GetValue<List<RecipeModel>>() ?? [];
-				foreach(var recipe in recipes!)
+				RecipesFromAI = recipesAugmented.GetValue<List<RecipeModel>>() ?? [];
+				foreach (var recipe in RecipesFromAI)
 				{
-					RecipesFromGPT.Add(recipe);
+					recipesFromIndex.Add(recipe);
 				}
-				return RecipesFromGPT!;
+
 			}
 			catch(Exception ex)
 			{
 				logger.LogError($"Error: {ex.Message}");
 			}
-			return [];
+
+			return recipesFromIndex;
 		}
 
 		public async Task<List<string>> CustomInstructions(RecipeModel recipe)

@@ -6,7 +6,7 @@
 		public List<IngredientModel> Ingredients = [provide ingredients needed without quantifying them here Note that ingredients are not just strings, they have their attributes mentioned in next line];
 ```Ingredient Model attributes start:
 		public int Id  = 'starts from 1 for each recipe'
-		public string name  = 'ingredient name';
+		public string name  = 'ingredient name in lower case only';
 		public string food_group = 'specifies which group the ingredient belong to, Eg: Egg, Spices, milk and derivates, pulses...';
 ```Ingredient Model attributes end;
 		public List<string> Instructions  = [provide instructions along with instruction numbers for each starting from 1.];

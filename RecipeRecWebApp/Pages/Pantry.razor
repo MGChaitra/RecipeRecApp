@@ -2,11 +2,26 @@
 @using Models
 @inject ILogger<Pantry> logger;
 @using RecipeRecWebApp.Components;
+@using RecipeRecWebApp.Contracts
+@inject IIngredientService IngredientService;
 
 <PageTitle>Pantry</PageTitle>	
 <div class="grid-container">
 	<div class="basket">
-		<h1>Pantry</h1>
+		<div class="buttons-aligner">
+			<h1>Pantry</h1>
+			<button class="btn btn-primary mt-3" @onclick="GetRecipes">
+				Get Recipes
+			</button>
+			@if (isLoadingRecipe)
+			{
+				<div class="spinner"></div>
+			}
+		</div>
+		@if (SharedDataModel.SelectedIngredients.Count == 0)
+		{
+			<p style="color: red">@selectMessage</p>
+		}
 		@foreach(var item in SharedDataModel.SelectedIngredients)
 		{
 			<div class="basket-item">
@@ -16,7 +31,14 @@
 		}
 	</div>
 	<div>
-		<RecipesComponent></RecipesComponent>
+		@if (isLoadingRecipe)
+		{
+			<div class="spinner"></div>
+		}
+		else if (SharedDataModel.Recipes.Count > 0)
+		{
+			<RecipesComponent></RecipesComponent>
+		}
 	</div>
 </div>
 

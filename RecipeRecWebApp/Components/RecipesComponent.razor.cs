@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Components.Web;
 using Models;
 
 namespace RecipeRecWebApp.Components
@@ -39,7 +38,7 @@ namespace RecipeRecWebApp.Components
 			}
 			catch(Exception ex)
 			{
-				Console.WriteLine($"Error: {ex.Message}");
+				logger.LogError($"Error: {ex.Message}");
 			}
 		}
 
@@ -57,7 +56,7 @@ namespace RecipeRecWebApp.Components
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Error: {ex.Message}");
+				logger.LogError($"Error: {ex.Message}");
 			}
 		}
 	}
