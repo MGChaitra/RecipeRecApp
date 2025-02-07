@@ -2,6 +2,8 @@
 @using Models
 @using RecipeRecWebApp.Contracts;
 @inject IIngredientService ingredientService;
+@inject IRecipeService recipeService;
+@inject ILogger<PopUpComponent> logger;
 
 @if(display){
 	<div class="modal-overly">

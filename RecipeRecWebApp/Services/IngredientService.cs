@@ -15,26 +15,6 @@ namespace RecipeRecWebApp.Services
 		private readonly HttpClient _httpClient = httpclient;
 		private readonly ILogger<IngredientService> logger = logger;
 
-		public async Task<List<string>> CustomInstructions(RecipeModel recipe)
-		{
-			List<string> instructions = [];
-			try
-			{
-				var res = await _httpClient.PostAsJsonAsync("api/Ingredient/CustomizeInstructions", recipe);
-				res.EnsureSuccessStatusCode();
-
-				instructions = JsonSerializer.Deserialize<List<string>>(
-					await res.Content.ReadAsStringAsync(),
-					new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-					) ?? [];
-			}
-			catch (Exception ex)
-			{
-				logger.LogError($"Error: {ex.Message}");
-			}
-			return instructions;
-		}
-
 		/// <summary>
 		/// Async Method to get ingredients from the API
 		/// </summary>
@@ -77,25 +57,7 @@ namespace RecipeRecWebApp.Services
 		}
 
 
-		public async Task<List<RecipeModel>> GetRecipes(List<IngredientModel> selectedIngredients)
-		{
-			List<RecipeModel> recipes = [];
-			try
-			{
-				var response = await _httpClient.PostAsJsonAsync("api/Ingredient/GetRecipes", selectedIngredients);
-				response.EnsureSuccessStatusCode();
-
-				recipes = JsonSerializer.Deserialize<List<RecipeModel>>(
-					await response.Content.ReadAsStringAsync(),
-					new JsonSerializerOptions { PropertyNameCaseInsensitive = true}
-					) ?? [];
-			}
-			catch (Exception ex)
-			{
-				logger.LogError($"Error: {ex.Message}");
-			}
-			return recipes;
-		}
+		
 
 		public void MapIngredients()
 		{

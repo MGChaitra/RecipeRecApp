@@ -22,27 +22,11 @@ namespace RecipeRecAPI.Controllers
 		{
 			if(String.IsNullOrEmpty(newIngredient.Name) || newIngredient == null)
 			{
-				return BadRequest("Ingredient is null");
+				return NotFound("Ingredient not found");
 			}
 			ingredientService.AddIngredient(newIngredient);
 			return Ok("Ingredient Added");
 
-		}
-
-		[HttpPost("GetRecipes")]
-		public async Task<IActionResult> GetRecipes(List<IngredientModel> selectedIngredients)
-		{
-			return Ok(await ingredientService.GetRecipes(selectedIngredients));
-		}
-
-		[HttpPost("CustomizeInstructions")]
-		public async Task<IActionResult> GetCustomInstructions(RecipeModel recipe)
-		{
-			if (recipe == null)
-			{
-				return BadRequest("recipe is null");
-			}
-			return Ok(await ingredientService.CustomInstructions(recipe));
 		}
 	}
 }

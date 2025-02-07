@@ -22,14 +22,14 @@ namespace RecipeRecWebApp.Components
 			{
 				loading = "Loading...";
 				StateHasChanged();
-				recipe.Instructions = await ingredientService.CustomInstructions(recipeModel);
+				recipe.Instructions = await recipeService.CustomInstructions(recipeModel);
 				loading = "";
 				SharedDataModel.UpdateChanges();
 				StateHasChanged();
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Error: {ex.Message}");
+				logger.LogError($"Error: {ex.Message}");
 			}
 		}
 	}

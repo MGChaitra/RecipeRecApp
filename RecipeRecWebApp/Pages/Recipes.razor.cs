@@ -207,7 +207,7 @@ namespace RecipeRecWebApp.Pages
 			{
 				if (SharedDataModel.SelectedIngredients.Count > 0)
 				{
-					SharedDataModel.Recipes = await IngredientService.GetRecipes(SharedDataModel.SelectedIngredients);
+					SharedDataModel.Recipes = await RecipeService.GetRecipes(SharedDataModel.SelectedIngredients);
 					SharedDataModel.UpdateChanges();
 				}
 				else

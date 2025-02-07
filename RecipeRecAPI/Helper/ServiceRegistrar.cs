@@ -15,6 +15,7 @@ namespace RecipeRecAPI.Helper
 			try
 			{
 				services.AddSingleton<IIngredientService, IngredientService>();
+				services.AddSingleton<IRecipeServices, RecipeServices>();
 				services.AddSingleton<IKernalProvider,KernalProvider>();
 			}
 			catch(Exception ex)

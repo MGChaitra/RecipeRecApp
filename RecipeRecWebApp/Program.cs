@@ -15,6 +15,8 @@ IConfiguration configuration = new ConfigurationBuilder()
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(configuration.GetSection("ApiKey").Value!) });
 builder.Services.AddScoped<IIngredientService,IngredientService>();
+builder.Services.AddScoped<IRecipeService, RecipeService>();
+
 
 var app = builder.Build();
 try
