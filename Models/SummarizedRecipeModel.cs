@@ -8,8 +8,8 @@ namespace Models
 {
     public class SummarizedRecipeModel
     {
-        public string Title { get; set; }
-        public string Ingredients {  get; set; }    
-        public string Summary {  get; set; }    
+        public string Title { get; set; } = string.Empty;
+        public string Ingredients {  get; set; } = string.Empty;
+        public string Summary {  get; set; } = string.Empty;
     }
 }

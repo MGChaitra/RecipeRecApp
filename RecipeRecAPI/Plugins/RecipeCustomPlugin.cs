@@ -75,12 +75,12 @@ namespace RecipeRecAPI.Plugins
             string prompt = promptTemplate.Replace("{ingredients}", ingredients);
 
             var response = await kernel.InvokePromptAsync<string>(prompt);
-
-            var recipes = ParseRecipes(response);
-            if (recipes == null)
+            if (response == null)
             {
                 throw new Exception("No Response");
             }
+            var recipes = ParseRecipes(response);
+           
             return recipes;
         }
 

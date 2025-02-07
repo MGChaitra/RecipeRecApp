@@ -16,12 +16,12 @@ namespace RecipeRecWebApp.Components
         private string? selectedRecipeSummary;
         private bool showWarning = false;
         private ElementReference recipeCardContainer;
-        private void HandleSearchClick()
+        private async void HandleSearchClick()
         {
             if (SharedDataModel.SelectedIngredients.Count > 0)
             {
                 showWarning = false;
-                ProcessRecipes();
+                await ProcessRecipes();
             }
             else
             {
@@ -90,9 +90,13 @@ namespace RecipeRecWebApp.Components
         {
             if (selectedRecipe != null)
             {
-                SharedDataModel.FavoriteRecipes.Add(selectedRecipe);
-                StateHasChanged();
-                SharedDataModel.UpdateChanges();
+              
+                if (!SharedDataModel.FavoriteRecipes.Any(r => r.recipe_name == selectedRecipe.recipe_name))
+                {
+                    SharedDataModel.FavoriteRecipes.Add(selectedRecipe);
+                    StateHasChanged();
+                    SharedDataModel.UpdateChanges();
+                }
             }
         }
     }

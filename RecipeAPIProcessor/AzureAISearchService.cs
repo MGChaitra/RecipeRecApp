@@ -4,6 +4,7 @@ using Azure.Search.Documents.Indexes;
 using Azure.Search.Documents.Indexes.Models;
 using Azure.Search.Documents.Models;
 using Models;
+using Microsoft.Extensions.Logging;
 
 public class AzureAISearchService
 {
@@ -11,11 +12,13 @@ public class AzureAISearchService
     private readonly SearchClient _searchClient;
     private readonly string _indexName = "recipe";
     private readonly string _endpoint;
-    public AzureAISearchService(string searchServiceName, string apiKey, string endpoint)
+    private readonly ILogger<AzureAISearchService> _logger;
+    public AzureAISearchService(string searchServiceName, string apiKey, string endpoint, ILogger<AzureAISearchService> logger)
     {
         _endpoint = endpoint;
         _indexClient = new SearchIndexClient(new Uri(endpoint), new AzureKeyCredential(apiKey));
         _searchClient = new SearchClient(new Uri(endpoint), _indexName, new AzureKeyCredential(apiKey));
+        _logger = logger;
     }
 
     /// <summary>
@@ -23,28 +26,42 @@ public class AzureAISearchService
     /// </summary>
     public async Task CreateIndexAsync()
     {
-        var definition = new SearchIndex(_indexName)
+        try
         {
-            Fields = new[]
+            var definition = new SearchIndex(_indexName)
             {
-                new SimpleField("id", SearchFieldDataType.String) { IsKey = true },
-                new SearchableField("recipe_name") { IsFacetable = true },
-                new SearchableField("ingredients") { IsFilterable=true },
-                new SearchableField("instructions"),
-                new SearchField("embedding", SearchFieldDataType.Collection(SearchFieldDataType.Double)),
+                Fields = new[]
+                {
+                    new SimpleField("id", SearchFieldDataType.String) { IsKey = true },
+                    new SearchableField("recipe_name") { IsFacetable = true },
+                    new SearchableField("ingredients") { IsFilterable = true },
+                    new SearchableField("instructions"),
+                    new SearchField("embedding", SearchFieldDataType.Collection(SearchFieldDataType.Double)),
+                }
+            };
 
-
-            }
-        };
-
-        await _indexClient.CreateOrUpdateIndexAsync(definition);
+            await _indexClient.CreateOrUpdateIndexAsync(definition);
+            _logger.LogInformation("Index created or updated successfully.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating or updating the index.");
+            throw;
+        }
     }
 
     /// <summary>
     /// Searches for recipes in Azure AI Search.
     /// </summary>
+
     public async Task<List<RecipeModel>> SearchRecipesAsync(string query)
     {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            _logger.LogWarning("Search query is null or empty.");
+            return new List<RecipeModel>();
+        }
+
         try
         {
             var searchOptions = new SearchOptions
@@ -53,14 +70,21 @@ public class AzureAISearchService
                 QueryType = SearchQueryType.Full,
                 SearchMode = SearchMode.All,
                 Size = 4,
-                            
             };
-            var response = await _searchClient.SearchAsync<RecipeModel>(query,searchOptions);
+
+            var response = await _searchClient.SearchAsync<RecipeModel>(query, searchOptions);
             var recipes = response.Value.GetResults().Select(x => x.Document).ToList();
+            _logger.LogInformation("Search completed successfully with {Count} results.", recipes.Count);
             return recipes;
         }
-       catch(RequestFailedException ex)
+        catch (RequestFailedException ex)
         {
+            _logger.LogError(ex, "Search request failed.");
+            return new List<RecipeModel>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An unexpected error occurred during the search.");
             return new List<RecipeModel>();
         }
     }

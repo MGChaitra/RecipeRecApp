@@ -10,13 +10,13 @@ namespace Models
     public class RecipeModel
     {
         [JsonPropertyName("id")]
-        public string id { get; set; }
+        public string id { get; set; } = string.Empty;
         [JsonPropertyName("recipe_name")]
-        public string recipe_name { get; set; }
+        public string recipe_name { get; set; } = string.Empty;
         [JsonPropertyName("ingredients")]
-        public string ingredients { get; set; }
+        public string ingredients { get; set; } = string.Empty;
         [JsonPropertyName("instructions")]
-        public string instructions { get; set; }
- 
+        public string instructions { get; set; } = string.Empty;
+
     }
 }

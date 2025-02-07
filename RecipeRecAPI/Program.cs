@@ -24,13 +24,38 @@ IConfiguration configuration = new ConfigurationBuilder()
 .AddUserSecrets<Program>()
 
 .Build();
-var searchServiceName = configuration["Azure:Search:ServiceName"];
-var searchApiKey = configuration["Azure:Search:ApiKey"];
-var endpoint = configuration["Azure:Search:Endpoint"];
-var searchService = new AzureAISearchService(searchServiceName, searchApiKey, endpoint);
+    var searchServiceName = configuration["Azure:Search:ServiceName"];
+    var searchApiKey = configuration["Azure:Search:ApiKey"];
+    var endpoint = configuration["Azure:Search:Endpoint"];
+
+if (string.IsNullOrWhiteSpace(searchServiceName))
+{
+    throw new ArgumentNullException(nameof(searchServiceName), "Search service name cannot be null or empty.");
+}
+
+if (string.IsNullOrWhiteSpace(searchApiKey))
+{
+    throw new ArgumentNullException(nameof(searchApiKey), "Search API key cannot be null or empty.");
+}
+
+if (string.IsNullOrWhiteSpace(endpoint))
+{
+    throw new ArgumentNullException(nameof(endpoint), "Endpoint cannot be null or empty.");
+}
+builder.Services.AddSingleton<AzureAISearchService>(serviceProvider =>
+{
+
+
+    var logger = serviceProvider.GetRequiredService<ILogger<AzureAISearchService>>();
+    return new AzureAISearchService(searchServiceName, searchApiKey, endpoint, logger);
+});
+
+
+#pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
+var searchService = builder.Services.BuildServiceProvider().GetRequiredService<AzureAISearchService>();
+#pragma warning restore ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
 await searchService.CreateIndexAsync();
-builder.Services.AddSingleton(new AzureAISearchService(searchServiceName, searchApiKey, endpoint));
-builder.Services.AddSingleton(searchService);
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
