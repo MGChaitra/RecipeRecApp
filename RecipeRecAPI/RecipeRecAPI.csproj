@@ -18,9 +18,4 @@
     <ProjectReference Include="..\RecipeAPIProcessor\RecipeAPIProcessor.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Prompts\" />
-
-  </ItemGroup>
-
 </Project>

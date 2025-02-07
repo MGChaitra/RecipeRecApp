@@ -38,18 +38,20 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton(sp =>
 {
-
     var kernelBuilder = Kernel.CreateBuilder();
     kernelBuilder.AddAzureOpenAIChatCompletion(
         deploymentName: configuration["AzureOpenAI:DeploymentName"]!,
         endpoint: configuration["AzureOpenAI:Endpoint"]!,
         apiKey: configuration["AzureOpenAI:ApiKey"]!
-        );
-    var kernel=kernelBuilder.Build();
+    );
 
-    var recipwPlugin = new RecipeCustomPlugin(builder.Configuration);
-    kernel.Plugins.AddFromObject(recipwPlugin, nameof(RecipeCustomPlugin));
-  
+    var kernel = kernelBuilder.Build();
+
+    var logger = sp.GetRequiredService<ILogger<RecipeCustomPlugin>>();
+    var recipePlugin = new RecipeCustomPlugin(configuration, logger);
+
+    kernel.Plugins.AddFromObject(recipePlugin, nameof(RecipeCustomPlugin));
+
     return kernel;
 });
 builder.Services.AddSingleton<RecipeCustomPlugin>();

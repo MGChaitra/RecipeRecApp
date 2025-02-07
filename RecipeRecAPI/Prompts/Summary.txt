@@ -1,0 +1,16 @@
+You are a professional chef and food writer. Your task is to create a **short, user-friendly recipe summary** for the given recipe.
+
+### Recipe Details:
+{recipe}
+
+### Instructions:
+- Summarize the key highlights of this recipe in **more detail**.
+- Include the **main ingredients** without listing every detail.
+- Also make use of **measurments** for the ingredients needed for the particular recipe.
+- Focus on the **cooking process** and what makes this recipe unique.
+- Keep the tone **engaging and food-friendly**.
+
+### Example Summary:
+For a classic **Spaghetti Carbonara**, whisk eggs and cheese, toss with hot pasta and crispy pancetta, and finish with black pepper. Creamy, rich, and packed with umami flavor!
+
+**Now, generate the summary for the given recipe:**
