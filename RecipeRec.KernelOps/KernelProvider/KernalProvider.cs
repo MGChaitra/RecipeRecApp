@@ -12,8 +12,9 @@ using Microsoft.SemanticKernel.ChatCompletion;
 
 namespace RecipeRec.KernelOps.KernelProvider
 {
-	public class KernalProvider : IKernalProvider
+	public class KernalProvider(ILogger<KernalProvider> logger) : IKernalProvider
 	{
+		private readonly ILogger<KernalProvider> _logger = logger;
 		public Kernel CreateKernal()
 		{
 			IKernelBuilder kernelBuilder = Kernel.CreateBuilder();
@@ -35,12 +36,13 @@ namespace RecipeRec.KernelOps.KernelProvider
 					);
 
 				string? TextEmbeddingDeploymentName = configuration["AzureAiService:embeddingModel"];
-				#pragma warning disable SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+
+				#pragma warning disable SKEXP0010 
 				kernelBuilder.AddAzureOpenAITextEmbeddingGeneration(
 					TextEmbeddingDeploymentName!,
 					Endpoint!,
 					ApiKey!);
-				#pragma warning restore SKEXP0010 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+				#pragma warning restore SKEXP0010 
 
 				var searchClient = new SearchClient(
 					new Uri(configuration["SearchClient:uri"]!),
@@ -65,7 +67,6 @@ namespace RecipeRec.KernelOps.KernelProvider
 					Endpoint!,
 					ApiKey!
 					);
-
 				//service;
 				kernelBuilder.Services.AddLogging(logging => { logging.AddConsole(); });
 				kernelBuilder.Services.AddSingleton<AzureOpenAIChatCompletionService>(OpenAiService);
@@ -84,7 +85,7 @@ namespace RecipeRec.KernelOps.KernelProvider
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Error: {ex.Message}");
+				_logger.LogError($"Error: {ex.Message}");
 			}
 			return kernelBuilder.Build();
 		}

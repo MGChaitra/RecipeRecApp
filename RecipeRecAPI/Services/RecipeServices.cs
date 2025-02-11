@@ -23,10 +23,21 @@ namespace RecipeRecAPI.Services
 				var arguments = new KernelArguments();
 				arguments.Add("expandedIngredients", expandedIngredients);
 
+				//retrieval 
 				var res = await kernel.InvokeAsync("IndexPlugin", "Get_Recipes", arguments);
 				recipesFromIndex = res.GetValue<List<RecipeModel>>() ?? [];
+
 				logger.LogWarning($"Recipes from Index: {recipesFromIndex.Count}");
 
+				//augmentation
+				arguments.Clear();
+				arguments.Add("selectedIngredients", selectedIngredients);
+				arguments.Add("RetrivedRecipes", recipesFromIndex);
+				var resAugmented = await kernel.InvokeAsync("CustomizePlugin", "Rag_indexRecipes", arguments);
+				recipesFromIndex = resAugmented.GetValue<List<RecipeModel>>() ?? [];
+
+
+				//synthetic recipes
 				List<RecipeModel> RecipesFromAI = [];
 
 				arguments.Clear();

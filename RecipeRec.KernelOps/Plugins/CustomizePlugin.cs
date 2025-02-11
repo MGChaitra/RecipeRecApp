@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Models;
 using RecipeRec.KernelOps.Contracts;
@@ -11,6 +12,7 @@ namespace RecipeRec.KernelOps.Plugins
 	{
 		private readonly IConfiguration configuration = configuration;
 		private readonly Kernel kernel = kernel;
+		private readonly ILogger<CustomizePlugin> logger = kernel.LoggerFactory.CreateLogger<CustomizePlugin>();
 
 		[KernelFunction("Custom_instructions")]
 		[Description("For every given list of instructions you customize those and return list of custom instructions")]
@@ -35,7 +37,7 @@ namespace RecipeRec.KernelOps.Plugins
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Error: {ex.Message}");
+				logger.LogError($"Error: {ex.Message}");
 			}
 			return result;
 		}
@@ -68,10 +70,50 @@ namespace RecipeRec.KernelOps.Plugins
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Error: {ex.Message}");
+				logger.LogError($"Error: {ex.Message}");
 			}
 
 			return recipes;
+		}
+
+		[KernelFunction("Rag_indexRecipes")]
+		[Description("Invoked when user wants recipes retrived from index to be augmented by LLM based on user ingredients")]
+		public async Task<List<RecipeModel>> RagRecipes(List<IngredientModel> selectedIngredients,List<RecipeModel> RetrivedRecipes)
+		{
+			List<RecipeModel> augmentedRecipes = [];
+			try
+			{
+				string RequiredIngredients = "";
+				foreach (var ing in selectedIngredients)
+				{
+					RequiredIngredients += $"{ing.Name}, ";
+				}
+
+				string recipes = "";
+				foreach(var recipe in RetrivedRecipes)
+				{
+					recipes += JsonSerializer.Serialize(recipe);
+				}
+				var arguments = new KernelArguments()
+				{
+					["RequiredIngredients"] = RequiredIngredients,
+					["Recipes"] = recipes 
+				};
+
+				var promptFilePath = configuration["PromptFiles:AugmentingRecipesPrompt"];
+				string prompt = await File.ReadAllTextAsync(promptFilePath!);
+
+				var response = kernel.InvokePromptAsync(prompt, arguments);
+
+				var result = response.Result.ToString();
+				augmentedRecipes = JsonSerializer.Deserialize<List<RecipeModel>>(result, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? [];
+			}
+			catch (Exception ex)
+			{
+				logger.LogError($"Error: {ex.Message}");
+			}
+
+			return augmentedRecipes;
 		}
 	}
 }

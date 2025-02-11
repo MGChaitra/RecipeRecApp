@@ -22,6 +22,8 @@ namespace RecipeRec.KernelOps.Plugins
 		private readonly IConfiguration configuration = configuration;
 		private readonly SearchClient searchClient = searchClient;
 		private readonly Kernel kernel = kernel;
+		private readonly ILogger<IndexPlugin> logger = kernel.LoggerFactory.CreateLogger<IndexPlugin>();
+
 
 		[KernelFunction("CreateAzureSearchIndex")]
 		[Description("creates Recipe Index in azure search")]
@@ -48,11 +50,11 @@ namespace RecipeRec.KernelOps.Plugins
 				index.ScoringProfiles.Add(scoringProfile);
 
 				await indexClient.CreateOrUpdateIndexAsync(index);
-				Console.WriteLine("Info: Index Created/Updated");
+				logger.LogInformation("Index Created/Updated");
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Error: {ex.Message}");
+				logger.LogError($"Error: {ex.Message}");
 			}
 
 		}
@@ -121,7 +123,7 @@ namespace RecipeRec.KernelOps.Plugins
 			}
 			catch(Exception ex)
 			{
-				Console.WriteLine($"Error: {ex.Message}");
+				logger.LogError($"Error: {ex.Message}");
 			}
 
 			return returnList ?? [];
@@ -169,11 +171,11 @@ namespace RecipeRec.KernelOps.Plugins
 					documents.Add(document);
 				}
 				Response<IndexDocumentsResult> res = await searchClient.UploadDocumentsAsync(documents);
-				Console.WriteLine($"Embedded Recipes Uploaded, {res}");
+				logger.LogInformation($"Embedded Recipes Uploaded, {res}");
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Error: {ex.Message}");
+				logger.LogError($"Error: {ex.Message}");
 			}
 		}
 	}
