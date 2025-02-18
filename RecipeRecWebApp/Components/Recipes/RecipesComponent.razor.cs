@@ -1,11 +1,13 @@
+using Microsoft.JSInterop;
 using Models;
 
-namespace RecipeRecWebApp.Components
+namespace RecipeRecWebApp.Components.Recipes
 {
 	public partial class RecipesComponent
 	{
 
 		private Dictionary<RecipeModel, bool> display = [];
+
 		protected override void OnInitialized()
 		{
 			SharedDataModel.OnChanged += StateHasChanged;
@@ -17,20 +19,44 @@ namespace RecipeRecWebApp.Components
 			SharedDataModel.OnChanged -= StateHasChanged;
 		}
 
-		private void OpenRecipe(RecipeModel recipe)
+		private void ViewFavorites()
 		{
-			display[recipe] = true;
+			SharedDataModel.displayRecipe = false;
+			SharedDataModel.UpdateChanges();
+		}
+
+		private void ToggleRecipe(RecipeModel recipe)
+		{
+			foreach(var item in display)
+			{
+				if (item.Key != recipe)
+				{
+					display[item.Key] = false;
+				}
+			}
+
+			if (display.ContainsKey(recipe))
+			{
+				display[recipe] = !display[recipe];
+			}
+			else
+			{
+				display[recipe] = true;
+			}
 		}
 
 		private void CloseRecipe(RecipeModel recipe)
 		{
 			display[recipe] = false;
 		}
-
-		private void AddFavorite(RecipeModel recipe)
+		private async void AddFavorite(RecipeModel recipe)
 		{
 			try
 			{
+				
+				var message = await Favorites.SaveFavorite(recipe);
+				await jsRuntime.InvokeVoidAsync("alert", $"{message}");
+
 				recipe.IsFav = true;
 				SharedDataModel.FavoriteRecipes.Add(recipe);
 				SharedDataModel.UpdateChanges();
@@ -42,13 +68,16 @@ namespace RecipeRecWebApp.Components
 			}
 		}
 
-		private void RemoveFavorite(RecipeModel recipe)
+		private async Task RemoveFavorite(RecipeModel recipe)
 		{
 			try
 			{
-				recipe.IsFav = false;
 				if (SharedDataModel.FavoriteRecipes.Contains(recipe))
 				{
+					var message = await Favorites.RemoveFavorite(recipe);
+					await jsRuntime.InvokeVoidAsync("alert", $"{message}");
+					
+					recipe.IsFav = false;
 					SharedDataModel.FavoriteRecipes.Remove(recipe);
 					SharedDataModel.UpdateChanges();
 					StateHasChanged();

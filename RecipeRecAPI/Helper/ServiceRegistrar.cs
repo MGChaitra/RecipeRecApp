@@ -17,6 +17,7 @@ namespace RecipeRecAPI.Helper
 				services.AddSingleton<IIngredientService, IngredientService>();
 				services.AddSingleton<IRecipeServices, RecipeServices>();
 				services.AddSingleton<IKernalProvider,KernalProvider>();
+				services.AddSingleton<IFavoritesService, FavoritesService>();
 			}
 			catch(Exception ex)
 			{

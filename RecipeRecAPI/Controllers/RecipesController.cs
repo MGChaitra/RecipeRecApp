@@ -14,10 +14,12 @@ namespace RecipeRecAPI.Controllers
 		[HttpPost("GetRecipes")]
 		public async Task<IActionResult> GetRecipes(List<IngredientModel> selectedIngredients)
 		{
+			if (selectedIngredients == null || selectedIngredients.Count == 0)
+			{
+				return NotFound("Ingredients Not Found");
+			}
 			return Ok(await recipeServices.GetRecipes(selectedIngredients));
 		}
-
-
 
 		[HttpPost("CustomizeInstructions")]
 		public async Task<IActionResult> GetCustomInstructions(RecipeModel recipe)

@@ -13,10 +13,10 @@ IConfiguration configuration = new ConfigurationBuilder()
 	.AddJsonFile("appsettings.json")
 	.Build();
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(configuration.GetSection("ApiKey").Value!) });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(configuration.GetSection("ApiEndpoint").Value!) });
 builder.Services.AddScoped<IIngredientService,IngredientService>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
-
+builder.Services.AddScoped<IFavoritesService, FavoritesService>();
 
 var app = builder.Build();
 try
@@ -25,6 +25,8 @@ try
 	SharedDataModel.Ingredients = await ingredientService.GetIngredientsAsync();
 	ingredientService.MapIngredients();
 
+	var favoritesService = app.Services.GetRequiredService<IFavoritesService>();
+	await favoritesService.GetAllFavorites();
 }
 catch (Exception ex)
 {

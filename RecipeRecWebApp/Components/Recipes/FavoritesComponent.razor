@@ -1,0 +1,36 @@
+﻿@using Models
+@using RecipeRecWebApp.Contracts;
+@inject IFavoritesService Favorites;
+@inject ILogger<FavoritesComponent> logger;
+@inject IJSRuntime jsRuntime;
+
+<div class="fav-recipes">
+    <h3>Favorite Recipes</h3>
+    <h6>(@SharedDataModel.FavoriteRecipes.Count) Favorite Recipes</h6>
+
+    <div class="favorites" @onclick="() => { ViewAllRecipes(); }">
+        <span class="bi bi-star"></span> View All (@SharedDataModel.Recipes.Count) Recipes
+    </div>
+    @foreach (var recipe in SharedDataModel.FavoriteRecipes)
+    {
+        <button @onclick="() => {ToggleRecipe(recipe);}" class="custom-button">
+            <div class="recipe-details">
+                <div>
+                    <p>@recipe.Name</p>
+                    <p>@recipe.Description</p>
+                </div>
+            </div>
+            <div>
+                <span class="bi add-favorite-selected" @onclick=" ()=> RemoveFavorite(recipe)" @onclick:stopPropagation=true></span>
+            </div>
+        </button>
+        @if (display.ContainsKey(recipe))
+        {
+            <div class="hover-box">
+                <PopUpComponent display="@display[recipe]" OnClose="() => {CloseRecipe(recipe);}" RecipeModel="@recipe"></PopUpComponent>
+            </div>
+        }
+    }
+</div>
+
+

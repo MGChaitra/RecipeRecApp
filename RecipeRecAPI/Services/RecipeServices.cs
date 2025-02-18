@@ -38,16 +38,16 @@ namespace RecipeRecAPI.Services
 
 
 				//synthetic recipes
-				List<RecipeModel> RecipesFromAI = [];
+				//List<RecipeModel> RecipesFromAI = [];
 
-				arguments.Clear();
-				arguments.Add("selectedIngredients", selectedIngredients);
-				var recipesAugmented = await kernel.InvokeAsync("CustomizePlugin", "custom_recipes", arguments);
-				RecipesFromAI = recipesAugmented.GetValue<List<RecipeModel>>() ?? [];
-				foreach (var recipe in RecipesFromAI)
-				{
-					recipesFromIndex.Add(recipe);
-				}
+				//arguments.Clear();
+				//arguments.Add("selectedIngredients", selectedIngredients);
+				//var recipesAugmented = await kernel.InvokeAsync("CustomizePlugin", "custom_recipes", arguments);
+				//RecipesFromAI = recipesAugmented.GetValue<List<RecipeModel>>() ?? [];
+				//foreach (var recipe in RecipesFromAI)
+				//{
+				//	recipesFromIndex.Add(recipe);
+				//}
 
 			}
 			catch (Exception ex)

@@ -6,22 +6,23 @@ Provide Recipes, with name, description, ingredients, instructions to prepare th
 
 ###Json attributes to consider for response
 	Recipe:
-		-Id (int) : recipe id
+		-Id (string) : Guid.NewGuid().ToString() recipe id, unique Id across all calls and for recipes.
 		-Name (string) : recipe name
-		-Description (string): short description for recipe
+		-Description (string) : short description for recipe
 		-Ingredients: (array of IngredientModel): provide ingredients without quantifying them;
 			IngredientModel:
 				-Id (int) : ingredient id
 				-name (string) : ingredient name in lower case only;
 				-food_group (string) : 'specifies which group the ingredient belong to,for Example: Egg, Spices, milk and derivates, pulses...'
-		-Instructions (array of string)  : provide instructions along with 'instruction numbers' for each instruction starting from 1.;
-		-IsVeg (boolean) : true/false based on ingredients;
+		-Instructions (array of string)  : provide instructions along with 'numbers' for each instruction starting from 1.;
+		-IsVeg (boolean) : true/false based on ingredients, consider egg as non-veg, ie, IsVeg = false;
 
 ###Rules
--Return the response in list of json format, reject other types of responses. 
+-Return the response in list of json format, reject other types of responses.
 -Each Json Recipe Object contains nested object for ingredients
 -Each string in instruction should have Instruction along with instruction number
 -Do not add any quotes
 -Do not provide additional information, remove ```json if exists.
 -Return only the List of Json Objects based on Json attributes.
-Provide atleast {{$Numbers}}  recipes
+-Provide Indian Recipes only.
+Provide at least {{$Numbers}}  recipes

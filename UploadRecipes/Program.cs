@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Models;
 using RecipeRec.KernelOps.Contracts;
@@ -21,8 +22,13 @@ namespace UploadRecipes
 			{
 				List<RecipeModel> recipes = [];
 				string numberOfRecipes = configuration["IndexSettings:NumberOfRecipes"]!;
-				
-				IKernalProvider kernalProvider = new KernalProvider();
+
+				ILogger<KernalProvider> logger = LoggerFactory.Create(builder =>
+				{
+					builder.AddConsole();
+				}).CreateLogger<KernalProvider>();
+
+				IKernalProvider kernalProvider = new KernalProvider(logger);
 				var kernel = kernalProvider.CreateKernal();
 
 				string promptFilePath = configuration["PromptFiles:RecipeGenerationPrompt"]!;

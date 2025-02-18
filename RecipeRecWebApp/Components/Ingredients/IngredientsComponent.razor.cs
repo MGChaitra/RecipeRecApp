@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using Models;
 
-namespace RecipeRecWebApp.Pages
+namespace RecipeRecWebApp.Components.Ingredients
 {
-	public partial class Recipes
+	public partial class IngredientsComponent
 	{
 		private string searchTerm = string.Empty;
 		private List<CategoryModel> FilteredCategories = [];
@@ -21,18 +21,30 @@ namespace RecipeRecWebApp.Pages
 			try
 			{
 				FilteredCategories = SharedDataModel.Categories;
+				SharedDataModel.OnChanged += StateHasChanged;
 			}
 			catch (Exception ex)
 			{
 				logger.LogError($"Error: {ex.Message}");
 			}
 		}
-		public void ToggleAddIngredientFields()
+		public void Dispose()
+		{
+			SharedDataModel.OnChanged -= StateHasChanged;
+		}
+
+		private void ViewPantry()
+		{
+			SharedDataModel.selectIngredients = false;
+			SharedDataModel.UpdateChanges();
+		}
+
+		private void ToggleAddIngredientFields()
 		{
 			isAddIngredientVisible = !isAddIngredientVisible;
 		}
 
-		public async Task HandleKeyDown(KeyboardEventArgs e)
+		private async Task HandleKeyDown(KeyboardEventArgs e)
 		{
 			try
 			{
@@ -106,7 +118,7 @@ namespace RecipeRecWebApp.Pages
 			}
 		}
 
-		public void ToggleIngredientSelection(IngredientModel ingredient)
+		private void ToggleIngredientSelection(IngredientModel ingredient)
 		{
 			try
 			{
@@ -128,10 +140,9 @@ namespace RecipeRecWebApp.Pages
 			}
 
 		}
-		public async Task AddIngredient()
+		private async Task AddIngredient()
 		{
 			isLoading = true;
-
 			try
 			{
 				if (string.IsNullOrWhiteSpace(selectedCategory) || string.IsNullOrWhiteSpace(newIngredientName))
@@ -173,7 +184,7 @@ namespace RecipeRecWebApp.Pages
 							{
 								item.Visible = true;
 								item.Selected = true;
-								if(!SharedDataModel.SelectedIngredients.Contains(item)) SharedDataModel.SelectedIngredients.Add(item);
+								if (!SharedDataModel.SelectedIngredients.Contains(item)) SharedDataModel.SelectedIngredients.Add(item);
 							}
 						}
 					}
@@ -196,10 +207,11 @@ namespace RecipeRecWebApp.Pages
 			{
 				logger.LogError($"Error adding ingredient: {ex.Message}");
 			}
-			isLoading=false;
+			isAddIngredientVisible = false;
+			isLoading = false;
 		}
 
-		public async Task GetRecipes()
+		private async Task GetRecipes()
 		{
 			logger.LogInformation("Fetching Recipes...");
 			isLoadingRecipe = true;
@@ -207,6 +219,7 @@ namespace RecipeRecWebApp.Pages
 			{
 				if (SharedDataModel.SelectedIngredients.Count > 0)
 				{
+					SharedDataModel.displayRecipe = true;
 					SharedDataModel.Recipes = await RecipeService.GetRecipes(SharedDataModel.SelectedIngredients);
 					SharedDataModel.UpdateChanges();
 				}
@@ -214,7 +227,7 @@ namespace RecipeRecWebApp.Pages
 				{
 					selectMessage = "Select ingredients to proceed.";
 				}
-			} 
+			}
 			catch (Exception ex)
 			{
 				logger.LogError($"Error: {ex.Message}");
@@ -223,5 +236,3 @@ namespace RecipeRecWebApp.Pages
 		}
 	}
 }
-
-

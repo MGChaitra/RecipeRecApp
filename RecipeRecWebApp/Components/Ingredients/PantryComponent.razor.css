@@ -10,12 +10,41 @@
     background-image: linear-gradient(180deg, rgb(135, 206, 250) 0%, #dda0dd 70%);
     height: 100vh;
     width: 50vh;
-    overflow-y: scroll;
     border: solid black;
-    overflow-x: auto;
+    overflow-y: scroll;
 }
 
-.basket-item{
+.pantry-nav {
+    padding: 10px;
+    align-items: center;
+    height: 50px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid #ccc;
+    box-shadow: rgba(0,0,0,0.1) 5px 5px;
+}
+
+    .pantry-nav:hover {
+        padding: 10px;
+        align-items: center;
+        height: 50px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        background: rgba(0,0,0,0.1);
+        box-shadow: rgba(255,255,255,0.1) 5px 5px;
+    }
+
+
+.basket-item {
     display: flex;
     flex-direction: row;
     color: black;
@@ -26,7 +55,11 @@
     padding: 20px;
 }
 
-.basket-item p{
+.bi-cart-plus {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='black' class='bi bi-cart-plus-fill' viewBox='0 0 16 16'%3E%3Cpath d='M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M9 5.5V7h1.5a.5.5 0 0 1 0 1H9v1.5a.5.5 0 0 1-1 0V8H6.5a.5.5 0 0 1 0-1H8V5.5a.5.5 0 0 1 1 0'/%3E%3C/svg%3E");
+}
+
+.basket-item p {
     margin-top: 15px;
 }
 
@@ -68,6 +101,7 @@
     justify-content: space-between;
     margin-bottom: 50px;
 }
+
 .spinner {
     width: 20px;
     height: 20px;
@@ -76,6 +110,7 @@
     animation: spin 3s linear infinite;
     margin: 20px;
 }
+
 @keyframes spin {
     from {
         transform: rotate(0deg);
@@ -85,17 +120,9 @@
         transform: rotate(360deg);
     }
 }
-.grid-container {
-    display: grid;
-    grid-template-columns: 0.6fr 10fr;
-    height: 100vh;
-}
 
 @media (max-width: 768px) {
-    .basket{
+    .basket {
         width: 100%;
-    }
-    .grid-container {
-        grid-template-columns: 1fr;
     }
 }

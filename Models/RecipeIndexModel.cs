@@ -14,8 +14,8 @@ namespace Models
 		[SearchableField(AnalyzerName = "standard.lucene")]
 		public string Description { get; set; }
 
-		[SearchableField(AnalyzerName = "standard.lucene", IsFilterable = true)]
-		public List<string> Ingredients { get; set; }
+		//[SearchableField(AnalyzerName = "standard.lucene", IsFilterable = true)]
+		//public List<string> Ingredients { get; set; }
 
 		[SearchableField(AnalyzerName = "standard.lucene")]
 		public List<string> Instructions { get; set; }

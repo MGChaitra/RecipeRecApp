@@ -1,0 +1,103 @@
+﻿@using Models;
+@using RecipeRecWebApp.Contracts
+@inject IJSRuntime JSRuntime;
+@inject ILogger<IngredientsComponent> logger;
+@inject IIngredientService IngredientService;
+@inject IRecipeService RecipeService;
+@inject NavigationManager Navigator;
+
+<div class="ingredients">
+    <div class="container mt-3">
+        <h3>Select Ingredients</h3>
+        <h6>You have (@SharedDataModel.SelectedIngredients.Count) ingredients in your pantry</h6>
+
+        <div class="ingredients-nav" @onclick="() => { ViewPantry(); }">
+            <span class="bi bi-basket"></span> View Selected Ingredients
+        </div>
+        <div class="search-bar mb-3">
+            <input type="text" class="form-control" placeholder="Search Ingredients" @bind="searchTerm" @onkeyup="HandleKeyDown" />
+        </div>
+        <div class="buttons-aligner">
+            <div>
+                @if (isAddIngredientVisible)
+                {
+                    <div class="add-ingredient-section mt-3">
+                        <h5>Add New Ingredient</h5>
+                        <div class="form-group">
+                            <label for="ingredientCategory">Select Category</label>
+                            <select id="ingredientCategory" class="form-control" @bind="selectedCategory">
+                                <option value="">-- Select Category --</option>
+                                @foreach (var category in SharedDataModel.Categories)
+                                {
+                                    <option value="@category.Name">@category.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="ingredientName">Ingredient Name</label>
+                            <input id="ingredientName" type="text" class="form-control" @bind="newIngredientName" />
+                        </div>
+
+                        <button class="btn btn-primary" @onclick="AddIngredient">
+                            Add
+                        </button>
+                        @if (isLoading)
+                        {
+                            <div class="spinner"></div>
+                        }
+
+                    </div>
+                }
+                else
+                {
+                    <button class="btn btn-primary" @onclick="ToggleAddIngredientFields">Add Ingredient</button>
+                }
+            </div>
+            <div>
+                <button class="btn btn-primary" @onclick="GetRecipes">Get Recipes</button>
+                @if (isLoadingRecipe)
+                {
+                    <div class="spinner"></div>
+                }
+            </div>
+        </div>
+        @if (SharedDataModel.SelectedIngredients.Count == 0)
+        {
+            <p style="color: red">@selectMessage</p>
+        }
+        <div class="alert alert-secondary" role="alert">
+            The only ingredients we assume you have are salt, pepper, and water.
+        </div>
+        <div>
+            @foreach (var category in FilteredCategories)
+            {
+                <div class="category-section mb-3">
+                    <div class="category-header d-flex justify-content-between align-items-center" @onclick="() => ToggleCategory(category.Name)">
+                        <div class="d-flex align-items-center">
+                            <h5 class="m-0">@category.Name (@category.Ingredients.Count)</h5>
+                        </div>
+                        <button class="btn btn-link">
+                            <i class="bi @(category.IsExpanded ? "bi-chevron-up" : "bi-chevron-down")"></i>
+                        </button>
+                    </div>
+                    @if (category.IsExpanded)
+                    {
+                        <div class="ingredients-grid mt-2">
+                            @foreach (var ingredient in category.Ingredients)
+                            {
+                                if (ingredient.Visible)
+                                {
+                                    <div class="ingredient-card @(ingredient.Selected ? "selected" : "")" @onclick="() => ToggleIngredientSelection(ingredient)">
+                                        <span>@ingredient.Name</span>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+

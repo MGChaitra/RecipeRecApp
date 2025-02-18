@@ -1,16 +1,21 @@
-﻿@page "/Pantry"
-@using Models
-@inject ILogger<Pantry> logger;
+﻿@using Models
+@inject ILogger<PantryComponent> logger;
 @using RecipeRecWebApp.Components;
 @using RecipeRecWebApp.Contracts
 @inject IIngredientService IngredientService;
 @inject IRecipeService RecipeService;
+@inject NavigationManager Navigator;
 
-<PageTitle>Pantry</PageTitle>	
-<div class="grid-container">
-	<div class="basket">
+<div class="basket">
+	<div class="head-pantry">
 		<div class="buttons-aligner">
-			<h1>Pantry</h1>
+			<h3>Pantry</h3>
+			<h6>You have (@SharedDataModel.SelectedIngredients.Count) ingredients in your pantry</h6>
+
+			<div class="pantry-nav" @onclick="() => { SelectIngredients(); }">
+				<span class="bi bi-cart-plus"></span> select More Ingredients
+			</div>
+
 			<button class="btn btn-primary mt-3" @onclick="GetRecipes">
 				Get Recipes
 			</button>
@@ -19,26 +24,19 @@
 				<div class="spinner"></div>
 			}
 		</div>
+	</div>
+	<div class="body-pantry">
 		@if (SharedDataModel.SelectedIngredients.Count == 0)
 		{
 			<p style="color: red">@selectMessage</p>
 		}
-		@foreach(var item in SharedDataModel.SelectedIngredients)
+
+		@foreach (var item in SharedDataModel.SelectedIngredients)
 		{
 			<div class="basket-item">
 				<p>@item.Name</p>
 				<span @onclick="() => { DeleteSelected(item); }" class="bi bi-trash"></span>
 			</div>
-		}
-	</div>
-	<div>
-		@if (isLoadingRecipe)
-		{
-			<div class="spinner"></div>
-		}
-		else if (SharedDataModel.Recipes.Count > 0)
-		{
-			<RecipesComponent></RecipesComponent>
 		}
 	</div>
 </div>

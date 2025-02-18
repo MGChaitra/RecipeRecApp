@@ -108,16 +108,16 @@ namespace RecipeRec.KernelOps.Plugins
 						inst.Add(instItem!.GetValue<string>());
 					}
 					recipe.Instructions = inst;
-					var ingrArray = jsonObject!["Ingredients"]!.AsArray();
-					List<IngredientModel> ingre = [];
-					foreach (var ingred in ingrArray)
-					{
-						var ingrepush = new IngredientModel();
-						var name = ingred!.GetValue<string>();
-						ingrepush.Name = name;
-						ingre.Add(ingrepush);
-					}
-					recipe.Ingredients = ingre;
+					//var ingrArray = jsonObject!["Ingredients"]!.AsArray();
+					//List<IngredientModel> ingre = [];
+					//foreach (var ingred in ingrArray)
+					//{
+					//	var ingrepush = new IngredientModel();
+					//	var name = ingred!.GetValue<string>();
+					//	ingrepush.Name = name;
+					//	ingre.Add(ingrepush);
+					//}
+					//recipe.Ingredients = ingre;
 					returnList.Add(recipe);
 				}
 			}
@@ -153,17 +153,17 @@ namespace RecipeRec.KernelOps.Plugins
 				for (int i = 0; i < recipes.Count; i++)
 				{
 					var recipe = recipes[i];
-					List<string> ingredients = [];
-					foreach (var ingredient in recipe.Ingredients)
-					{
-						ingredients.Add(ingredient.Name);
-					}
+					//List<string> ingredients = [];
+					//foreach (var ingredient in recipe.Ingredients)
+					//{
+					//	ingredients.Add(ingredient.Name);
+					//}
 					var document = new SearchDocument
 					{
 						{"Id",Guid.NewGuid().ToString()},
 						{"Name",recipe.Name},
 						{"Description",recipe.Description },
-						{"Ingredients",ingredients},
+						//{"Ingredients",ingredients},
 						{"Instructions",recipe.Instructions},
 						{"IsVeg",recipe.IsVeg },
 						{ "RecipeEmbeddings",embeddings[i].Span.ToArray()}

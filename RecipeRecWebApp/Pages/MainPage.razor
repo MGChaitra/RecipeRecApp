@@ -1,0 +1,24 @@
+﻿@page "/"
+@inject ILogger<MainPage> logger;
+@using RecipeRecWebApp.Components.Ingredients;
+@using RecipeRecWebApp.Components.Recipes;
+@using Models
+
+<PageTitle>Recipes</PageTitle>
+
+<div class="grid-container">
+    <div>
+        @if(SharedDataModel.selectIngredients){
+            <IngredientsComponent></IngredientsComponent>
+        }else{
+            <PantryComponent></PantryComponent>
+        }
+    </div>
+    <div>
+        @if(SharedDataModel.displayRecipe){
+            <RecipesComponent></RecipesComponent>
+        }else{
+            <FavoritesComponent></FavoritesComponent>
+        }
+    </div>
+</div>

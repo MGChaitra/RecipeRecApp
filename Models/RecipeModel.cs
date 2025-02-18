@@ -4,8 +4,8 @@ namespace Models
 {
 	public class RecipeModel
 	{
-		[JsonPropertyName("Id")]
-		public int Id { get; set; }
+		[JsonPropertyName("id")]
+		public string Id { get; set; }
 
 		[JsonPropertyName("Name")]
 		public string Name { get; set; } = string.Empty;

@@ -8,6 +8,9 @@
 		public static List<RecipeModel> Recipes = [];
 		public static List<RecipeModel> FavoriteRecipes = [];
 
+		public static bool selectIngredients = true;
+		public static bool displayRecipe = true;
+
 		public static event Action? OnChanged;
 		public static void UpdateChanges()
 		{
