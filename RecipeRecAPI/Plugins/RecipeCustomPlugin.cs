@@ -20,8 +20,8 @@ namespace RecipeRecAPI.Plugins
         }
 
         [KernelFunction("SummarizeRecipes")]
-        [Description("Generates a concise and user-friendly summary for a recipe based on its name, ingredients, and instructions.")]
-        public async Task<string> SummaryRecipeAsync(string recipe, Kernel kernel)
+        [Description("Generates a concise and user-friendly summary and ingredients for a recipe based on its name, instructions in the given format.")]
+        public async Task<List<SummarizedRecipeModel>> SummaryRecipeAsync(string recipe, Kernel kernel)
         {
 
             string? promptFilePath = _configuration["Prompts:Summary"];
@@ -38,17 +38,18 @@ namespace RecipeRecAPI.Plugins
             catch (Exception ex)
             {
                 _logger.LogError($"Error reading prompt file: {ex.Message}");
-                return "Error reading prompt file.";
+                return new List<SummarizedRecipeModel>();
             }
 
             string prompt = promptTemplate.Replace("{recipe}", recipe);
 
             var result = await kernel.InvokePromptAsync<string>(prompt);
-            if (result == null)
-            {
+            if(result == null){
                 throw new Exception("No Response");
             }
-            return result;
+            var response=ParseSummary(result);
+           
+            return response;
         }
 
         [KernelFunction("GenerateRecipes")]
@@ -65,6 +66,8 @@ namespace RecipeRecAPI.Plugins
             try
             {
                 promptTemplate = await File.ReadAllTextAsync(promptFilePath);
+            
+            
             }
             catch (Exception ex)
             {
@@ -105,8 +108,26 @@ namespace RecipeRecAPI.Plugins
             }
         }
 
-          
-        
+
+        private List<SummarizedRecipeModel> ParseSummary(string jsonResponse)
+        {
+            try
+            {
+                var recipes = JsonSerializer.Deserialize<List<SummarizedRecipeModel>>(jsonResponse, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    ReadCommentHandling = JsonCommentHandling.Skip,
+                    AllowTrailingCommas = true,
+                });
+
+                return recipes ?? new List<SummarizedRecipeModel>();
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"Error parsing recipes: {ex.Message}");
+                return new List<SummarizedRecipeModel>();
+            }
+        }
 
     }
 }

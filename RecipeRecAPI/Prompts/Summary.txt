@@ -1,16 +1,29 @@
-You are a professional chef and food writer. Your task is to create a **short, user-friendly recipe summary** for the given recipe.
+You are a professional chef and food writer. Your task is to generate a detailed and engaging recipe summary for the given recipe. Make sure to follow these specific instructions carefully.
 
-### Recipe Details:
+###Recipe Details:
 {recipe}
 
-### Instructions:
-- Summarize the key highlights of this recipe in **more detail**.
-- Include the **main ingredients** without listing every detail.
-- Also make use of **measurments** for the ingredients needed for the particular recipe.
-- Focus on the **cooking process** and what makes this recipe unique.
-- Keep the tone **engaging and food-friendly**.
+###Instructions:
+- Extract the title of the dish from the recipe.
+- List all main ingredients with their exact measurements (as given in the recipe).
+- Provide a detailed and engaging summary of the recipe:
+- Clearly describe the cooking process step-by-step.
+- Highlight what makes this recipe unique and special.
+- Maintain a warm, inviting, and food-friendly tone.
+- Ensure the summary is well-structured and at least 4-5 sentences long.
 
-### Example Summary:
-For a classic **Spaghetti Carbonara**, whisk eggs and cheese, toss with hot pasta and crispy pancetta, and finish with black pepper. Creamy, rich, and packed with umami flavor!
+###Expected Output Format:
+[
+  {
+    "title": "Homemade Masala Chai",
+    "ingredients": "Water: 2 cups, Tea powder: 2 teaspoons, Milk: 1 cup, Sugar: 2 teaspoons, Cardamom: 2 pods, Ginger: ½ inch (grated)",
+    "summary": "To prepare a rich and flavorful Masala Chai, start by boiling 2 cups of water with 2 teaspoons of tea powder, 2 cardamom pods, and ½ inch of grated ginger for an aromatic infusion. After 2-3 minutes, pour in 1 cup of milk and let it simmer for another few minutes to enhance the creaminess. Stir in 2 teaspoons of sugar (or adjust to taste) and let the tea blend harmoniously. Strain the chai into cups and enjoy its warm, spiced embrace—a perfect comforting drink for any time of the day."
+  }
+]
 
-**Now, generate the summary for the given recipe:**
+
+### Note:
+- Provide more detail about the summary with accurate instructions.
+- Ensure the summary is engaging and captures the essence of the dish.
+
+Now, generate the summary for the given recipe:

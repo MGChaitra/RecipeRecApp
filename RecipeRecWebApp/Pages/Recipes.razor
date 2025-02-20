@@ -5,6 +5,7 @@
 @inject IJSRuntime JSRuntime;
 @inject ILogger<Recipes> logger;
 @inject IIngredientService IngredientService;
+@inject NavigationManager Navigation
 
 
 <PageTitle>Recipes</PageTitle>
@@ -80,6 +81,19 @@
         </div>
     </div>
     <div class="recipes">
-        <RecipeDisplay></RecipeDisplay>
+        <div class="grid-container">
+            <div class="basket">
+
+                <button @onclick="HandleSearchClick" class="btn btn-primary mt-3">
+                    <i class="bi bi-search"></i> Search Recipe
+                </button>
+
+                @if (showWarning)
+                {
+                    <span class="text-danger"> Please Select the Ingredient to Search the Recipe</span>
+
+                }
+            </div>
+        </div>
     </div>
 </div>

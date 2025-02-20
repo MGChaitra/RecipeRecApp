@@ -7,19 +7,25 @@ namespace RecipeRecWebApp.Pages
     public partial class Favorites
     {
         private RecipeModel? selectedRecipe;
-        private string? selectedRecipeSummary;
+        private SummarizedRecipeModel? selectedRecipeSummary;
         private bool showSummaryModal = false;
-        protected override void OnInitialized()
+        private List<FavoriteRecipeModel> favoriteRecipes = new();
+        protected override async Task OnInitializedAsync()
         {
+            favoriteRecipes = await CosmosDbService.GetAllFavRecipe();
+            FavoriteStateService.SetFavorites(favoriteRecipes);
             StateHasChanged();
         }
 
-        private void RemoveFromFavorites(RecipeModel recipe)
-        {
 
-            SharedDataModel.FavoriteRecipes.Remove(recipe);
-            StateHasChanged();
-            SharedDataModel.UpdateChanges();
+        private async Task RemoveFromFavorites(FavoriteRecipeModel recipe)
+        {
+            bool success = await CosmosDbService.RemoveFromFv(recipe.recipe_name);
+            if (success)
+            {
+                FavoriteStateService.RemoveFavorites(recipe.recipe_name);
+                favoriteRecipes.Remove(recipe);
+            }
         }
 
         private async Task GetRecipeSummary(RecipeModel recipe)

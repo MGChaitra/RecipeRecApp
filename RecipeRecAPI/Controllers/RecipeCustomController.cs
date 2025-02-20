@@ -32,18 +32,19 @@ namespace RecipeRecAPI.Controllers
 
             foreach (var recipe in recipes)
             {
-                string fullrecipe = $"{recipe.recipe_name}\nIngredients: {recipe.ingredients}\nInstructions: {recipe.instructions}";
+                string fullrecipe = $"{recipe.recipe_name}\nInstructions: {recipe.instructions}";
                 var summary = await _recipeCustomPlugin.SummaryRecipeAsync(fullrecipe, _kernel);
 
-
-                enhancedRecipes.Add(new SummarizedRecipeModel
+                foreach (var sum in summary)
                 {
-                    Title = recipe.recipe_name,
-                    Ingredients = recipe.ingredients,
-                    Summary = summary
+                    enhancedRecipes.Add(new SummarizedRecipeModel
+                    {
+                        Title = sum.Title,
+                        Ingredients =sum.Ingredients,
+                        Summary = sum.Summary,
 
-                });
-
+                    });
+                }
             }
 
             return Ok(enhancedRecipes);
@@ -58,12 +59,11 @@ namespace RecipeRecAPI.Controllers
             var query = string.Join(", ", ingredients);
             var recipes = await _recipeCustomPlugin.GenerateRecipesAsync(query, _kernel);
 
-            if (recipes == null || recipes.Count==0)
+            if (recipes == null || recipes.Count == 0)
                 return NotFound("No recipes generated.");
 
             return Ok(recipes);
         }
-
 
     }
 }

@@ -2,7 +2,7 @@
 @using Models
 @using RecipeRecWebApp.Components
 @inject ILogger<Pantry> logger;
-
+@inject NavigationManager Navigation
 <PageTitle>Pantry</PageTitle>	
 <div class="grid-container">
 	<div class="basket">
@@ -14,7 +14,10 @@
 				<button @onclick="() => { DeleteSelected(item); }" class="btn btn-danger"><i class="bi bi-trash"></i>Delete</button>
 			</div>
 		}
-		
+
+		<button @onclick="HandleSearchClick" class="btn btn-primary mt-3">
+			<i class="bi bi-search"></i> Add Ingredient
+		</button>
 	</div>
 
  <div class="recipes">

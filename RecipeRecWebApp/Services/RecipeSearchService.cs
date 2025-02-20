@@ -1,21 +1,28 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Azure;
+using Azure.Search.Documents;
+using Azure.Search.Documents.Models;
+using Microsoft.Extensions.Logging;
 using Models;
 using RecipeRecWebApp.Contracts;
 using System.Net.Http;
 using System.Net.Http.Json;
-
+using System.Collections.Generic;
+using System.Linq;
+using System;
+using System.Threading.Tasks;
 
 namespace RecipeRecWebApp.Services
 {
     public class RecipeSearchService : IRecipeSearchService
     {
+       
         private readonly HttpClient _httpClient;
-        private readonly ILogger<RecipeSearchService> _logger;
-
-        public RecipeSearchService(HttpClient httpClient, ILogger<RecipeSearchService> logger)
+        private readonly ILogger _logger;
+        public RecipeSearchService(ILogger<RecipeSearchService> logger, HttpClient httpClient)
         {
-            _httpClient = httpClient;
+           _httpClient = httpClient;
             _logger = logger;
+          
         }
 
         public async Task<List<RecipeModel>> SearchRecipesAsync(List<string> ingredients)
@@ -52,7 +59,7 @@ namespace RecipeRecWebApp.Services
             }
         }
 
-        public async Task<string?> SummarizeRecipeAsync(RecipeModel recipe)
+        public async Task<SummarizedRecipeModel> SummarizeRecipeAsync(RecipeModel recipe)
         {
             try
             {
@@ -60,7 +67,11 @@ namespace RecipeRecWebApp.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var summaryList = await response.Content.ReadFromJsonAsync<List<SummarizedRecipeModel>>();
-                    return summaryList?.FirstOrDefault()?.Summary;
+                    foreach (var sum in summaryList)
+                    {
+                      return sum;
+                    }
+                 
                 }
                 return null;
             }
@@ -70,6 +81,35 @@ namespace RecipeRecWebApp.Services
                 return null;
             }
         }
+
+        public async Task StoreRecipeAsync(List<RecipeModel> recipes)
+        {
+            if (recipes == null || recipes.Count == 0)
+            {
+                _logger.LogWarning("No recipes to store.");
+                return;
+            }
+
+            try
+            {
+
+                var response = await _httpClient.PostAsJsonAsync("api/RecipeSearch/upload-recipes", recipes);
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Successfully stored {0} recipes in Azure Search index", recipes.Count);
+
+                }
+                else
+                {
+                    string errorMessage = await response.Content.ReadAsStringAsync();
+                    _logger.LogError("Failed to store recipes in Azure Search. Status: {0}, Error: {1}", response.StatusCode, errorMessage);
+                }
+
+            }
+            catch (RequestFailedException ex)
+            {
+                _logger.LogError("Failed to store recipes in Azure Search. Error: {0}", ex.Message);
+            }
+        }
     }
 }
-

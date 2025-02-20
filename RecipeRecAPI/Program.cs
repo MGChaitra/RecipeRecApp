@@ -1,5 +1,9 @@
+using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
+using RecipeAPIProcessor.Contacts;
+using RecipeAPIProcessor.Services;
 using RecipeRecAPI.Contracts;
 using RecipeRecAPI.Plugins;
 using RecipeRecAPI.Services;
@@ -13,7 +17,8 @@ builder.Services.AddCors(setUp =>
         setUp.AllowAnyHeader()
         .AllowAnyMethod()
         .SetIsOriginAllowed(_ => true)
-        .AllowCredentials();
+        .AllowCredentials()
+        .WithOrigins("https://localhost:7028/");
     });
 });
 // Add services to the container.
@@ -42,7 +47,7 @@ if (string.IsNullOrWhiteSpace(endpoint))
 {
     throw new ArgumentNullException(nameof(endpoint), "Endpoint cannot be null or empty.");
 }
-builder.Services.AddSingleton<AzureAISearchService>(serviceProvider =>
+builder.Services.AddSingleton<IAzureAISearchService,AzureAISearchService>(serviceProvider =>
 {
 
 
@@ -50,9 +55,20 @@ builder.Services.AddSingleton<AzureAISearchService>(serviceProvider =>
     return new AzureAISearchService(searchServiceName, searchApiKey, endpoint, logger);
 });
 
+builder.Services.AddSingleton<CosmosClient>(sp => new CosmosClient(
+    configuration["CosmosDb:Endpoint"],
+    configuration["CosmosDb:Key"]
+));
+
+builder.Services.AddSingleton<ICosmosDbService,CosmosDbService>(sp => new CosmosDbService(
+    sp.GetRequiredService<CosmosClient>(),
+    configuration["CosmosDb:DatabaseName"],
+    configuration["CosmosDb:ContainerName"]
+));
+
 
 #pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
-var searchService = builder.Services.BuildServiceProvider().GetRequiredService<AzureAISearchService>();
+var searchService = builder.Services.BuildServiceProvider().GetRequiredService<IAzureAISearchService>();
 #pragma warning restore ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
 await searchService.CreateIndexAsync();
 
@@ -84,11 +100,26 @@ builder.Services.AddSingleton<RecipeCustomPlugin>();
 
 
 builder.Services.AddSingleton<IIngredientService, IngredientService>();
+
+builder.Services.AddHttpClient<IUploadToIndexService, UploadToIndexService>();
+
+
+builder.Services.AddSingleton<IUploadToIndexService>(sp =>
+    {
+        var httpClient = sp.GetRequiredService<HttpClient>();
+        var searchApiKey = configuration["Azure:Search:ApiKey"];
+        var endpoint = configuration["Azure:Search:UploadEndpoint"];
+
+        return new UploadToIndexService(httpClient, endpoint, searchApiKey);
+    });
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }

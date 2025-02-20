@@ -1,27 +1,30 @@
 ﻿@page "/Favorites"
 @using Models
 @using RecipeRecWebApp.Contracts
+@using RecipeRecWebApp.Services
 @inject IRecipeSearchService RecipeSearchService
 @inject NavigationManager Navigation
 @inject HttpClient Http
 @inject ILogger<Favorites> logger;
-
+@inject CosmosDbService CosmosDbService
+@inject FavoriteStateService FavoriteStateService
 <PageTitle>Favorites</PageTitle>
 
 <div class="grid-container">
     <div class="basket">
         <h1>Favorite Recipes</h1>
 
-        @if (SharedDataModel.FavoriteRecipes.Any())
+        @if (favoriteRecipes.Any())
         {
-            @foreach (var recipe in SharedDataModel.FavoriteRecipes)
+            @foreach (var recipe in favoriteRecipes)
             {
                 <div class="recipe-card">
                     <h3>@recipe.recipe_name</h3>
-                    <p><strong>Ingredients:</strong> @recipe.ingredients</p>
                     <p><strong>Instructions:</strong>@recipe.instructions</p>
                     <div class="card-buttons">
-                        <button class="btn btn-info" @onclick="() => GetRecipeSummary(recipe)">
+                        <button class="btn btn-info" @onclick="() => GetRecipeSummary(new RecipeModel{
+                            recipe_name=recipe.recipe_name,instructions=recipe.instructions
+                        })">
                             Know More
                         </button>
                         <button class="btn btn-danger" @onclick="() => RemoveFromFavorites(recipe)">
@@ -43,8 +46,8 @@
     <div class="modal-backdrop">
         <div class="modal-content">
             <h3>@selectedRecipe?.recipe_name</h3>
-            <p><strong>Ingredients:</strong> @selectedRecipe?.ingredients</p>
-            <p><strong>Summary:</strong> @selectedRecipeSummary</p>
+            <p><strong>ingredients:</strong> @selectedRecipeSummary?.Ingredients</p>
+            <p><strong>Summary:</strong> @selectedRecipeSummary?.Summary</p>
             <div class="modal-buttons">
                 <button class="btn btn-secondary" @onclick="CloseModal">Close</button>
             </div>

@@ -13,7 +13,10 @@ namespace RecipeRecWebApp.Pages
         {
             StateHasChanged();
         }
-
+        public void HandleSearchClick()
+        {
+            Navigation.NavigateTo("/");
+        }
         public void DeleteSelected(IngredientModel item)
         {
             try

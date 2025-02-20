@@ -6,6 +6,7 @@ namespace RecipeRecWebApp.Contracts
     {
         Task<List<RecipeModel>> SearchRecipesAsync(List<string> ingredients);
         Task<List<RecipeModel>> GenerateRecipesAsync(List<string> ingredients);
-        Task<string?> SummarizeRecipeAsync(RecipeModel recipe);
+        Task<SummarizedRecipeModel?> SummarizeRecipeAsync(RecipeModel recipe);
+        Task StoreRecipeAsync(List<RecipeModel> recipes);
     }
 }

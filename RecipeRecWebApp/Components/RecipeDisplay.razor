@@ -3,9 +3,11 @@
 @inject IRecipeStateService RecipeState
 @inject HttpClient Http
 @inject ILogger<RecipeDisplay> logger;
-@inject IRecipeSearchService RecipeSearchService
+@inject IRecipeSearchService RecipeSearchService;
+@inject CosmosDbService CosmosDbService
 @using Models
 @inject IJSRuntime JS
+@inject FavoriteStateService FavoriteStateService
 <h3>Recipe Display</h3>
 <script src="js/script.js"></script>
 <div class="grid-container">
@@ -40,7 +42,6 @@
             {
                 <div class="recipe-card">
                     <h3>@recipe.recipe_name</h3>
-                    <p><strong>Ingredients:</strong> @recipe.ingredients</p>
                     <p><strong>Instructions:</strong> @recipe.instructions</p>
                     <button class="btn btn-info mt-2" @onclick="() => GetRecipeSummary(recipe)">
                         Know More
@@ -59,8 +60,8 @@
     <div class="modal-backdrop">
         <div class="modal-content">
             <h3>@selectedRecipe?.recipe_name</h3>
-            <p><strong>Ingredients:</strong> @selectedRecipe?.ingredients</p>
-            <p><strong>Summary:</strong> @selectedRecipeSummary</p>
+            <p><strong>Ingredients:</strong> @selectedRecipeSummary?.Ingredients</p>
+            <p><strong>Summary:</strong> @selectedRecipeSummary?.Summary</p>
             <div class="modal-buttons">
                 <button class="btn btn-success" @onclick="AddToFavorites">Favorite</button>
                 <button class="btn btn-secondary" @onclick="CloseModal">Close</button>

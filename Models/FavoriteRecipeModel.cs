@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public class RecipeModel
+    public class FavoriteRecipeModel
     {
-       
+        [JsonPropertyName("id")]
+        public string id { get; set; }
+
         [JsonPropertyName("recipe_name")]
-        public string recipe_name { get; set; } = string.Empty;
-        
+        public string recipe_name { get; set; } = Guid.NewGuid().ToString();
+
         [JsonPropertyName("instructions")]
         public string instructions { get; set; } = string.Empty;
-
     }
 }

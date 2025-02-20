@@ -15,7 +15,7 @@ namespace RecipeRecWebApp.Pages
         private string newIngredientName = string.Empty;
         private List<CategoryModel> FilteredCategories = new();
         private bool isLoading = false;
-
+        private bool showWarning = false;
         private bool isAddIngredientVisible = false;
         protected override async Task OnInitializedAsync()
         {
@@ -51,6 +51,19 @@ namespace RecipeRecWebApp.Pages
                 isLoading = false;
             }
         }
+        private void HandleSearchClick()
+        {
+            if (SharedDataModel.SelectedIngredients.Count > 0)
+            {
+                showWarning = false;
+                 Navigation.NavigateTo("/Pantry");
+            }
+            else
+            {
+                showWarning = true;
+            }
+        }
+
         private void ToggleAddIngredientFields()
         {
             isAddIngredientVisible = !isAddIngredientVisible;

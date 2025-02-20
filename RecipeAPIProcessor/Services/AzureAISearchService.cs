@@ -5,12 +5,13 @@ using Azure.Search.Documents.Indexes.Models;
 using Azure.Search.Documents.Models;
 using Models;
 using Microsoft.Extensions.Logging;
+using RecipeAPIProcessor.Contacts;
 
-public class AzureAISearchService
+public class AzureAISearchService: IAzureAISearchService
 {
     private readonly SearchIndexClient _indexClient;
     private readonly SearchClient _searchClient;
-    private readonly string _indexName = "recipe";
+    private readonly string _indexName = "recipenew";
     private readonly string _endpoint;
     private readonly ILogger<AzureAISearchService> _logger;
     public AzureAISearchService(string searchServiceName, string apiKey, string endpoint, ILogger<AzureAISearchService> logger)
@@ -32,9 +33,8 @@ public class AzureAISearchService
             {
                 Fields = new[]
                 {
-                    new SimpleField("id", SearchFieldDataType.String) { IsKey = true },
-                    new SearchableField("recipe_name") { IsFacetable = true },
-                    new SearchableField("ingredients") { IsFilterable = true },
+                 
+                    new SearchableField("recipe_name") {IsKey = true,  IsFacetable = true},
                     new SearchableField("instructions"),
                     new SearchField("embedding", SearchFieldDataType.Collection(SearchFieldDataType.Double)),
                 }
@@ -69,7 +69,7 @@ public class AzureAISearchService
                 IncludeTotalCount = true,
                 QueryType = SearchQueryType.Full,
                 SearchMode = SearchMode.All,
-                Size = 4,
+                Size = 6,
             };
 
             var response = await _searchClient.SearchAsync<RecipeModel>(query, searchOptions);

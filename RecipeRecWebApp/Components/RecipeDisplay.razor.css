@@ -3,6 +3,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    width:90%
 }
 
 .recipe-cards {
