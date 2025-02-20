@@ -1,10 +1,11 @@
 ﻿using System.Net.Http.Json;
 using Microsoft.Azure.Cosmos;
 using Models;
+using RecipeRecWebApp.Contracts;
 
 namespace RecipeRecWebApp.Services
 {
-    public class CosmosDbService
+    public class CosmosDbService: ICosmosDbService
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<CosmosDbService> _logger;

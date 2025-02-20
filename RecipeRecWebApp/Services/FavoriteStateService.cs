@@ -1,12 +1,14 @@
 ﻿using Models;
+using RecipeRecWebApp.Contracts;
 
 namespace RecipeRecWebApp.Services
 {
-    public class FavoriteStateService
+    public class FavoriteStateService : IFavoriteStateService
     {
         public event Action? OnFavoritesChanged;
-        private List<FavoriteRecipeModel> _favorites=new();
-        public List<FavoriteRecipeModel> FavoriteRecipes=> _favorites;
+        private List<FavoriteRecipeModel> _favorites = new();
+        public List<FavoriteRecipeModel> FavoriteRecipes => _favorites;
+
         public void SetFavorites(List<FavoriteRecipeModel> favorites)
         {
             _favorites = favorites;
@@ -19,9 +21,12 @@ namespace RecipeRecWebApp.Services
         }
         public void RemoveFavorites(string recipename)
         {
-            _favorites.RemoveAll(r=>r.recipe_name==recipename);
+            _favorites.RemoveAll(r => r.recipe_name == recipename);
             NotifyStateChanged();
         }
-        private void NotifyStateChanged()=> OnFavoritesChanged?.Invoke();
+        public void NotifyStateChanged()
+        {
+            OnFavoritesChanged?.Invoke();
+        }
     }
 }

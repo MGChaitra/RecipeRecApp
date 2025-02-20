@@ -1,13 +1,12 @@
-﻿@using RecipeRecWebApp.Services
-@using RecipeRecWebApp.Contracts
+﻿@using RecipeRecWebApp.Contracts
 @inject IRecipeStateService RecipeState
 @inject HttpClient Http
 @inject ILogger<RecipeDisplay> logger;
 @inject IRecipeSearchService RecipeSearchService;
-@inject CosmosDbService CosmosDbService
+@inject ICosmosDbService CosmosDbService
 @using Models
 @inject IJSRuntime JS
-@inject FavoriteStateService FavoriteStateService
+@inject IFavoriteStateService FavoriteStateService
 <h3>Recipe Display</h3>
 <script src="js/script.js"></script>
 <div class="grid-container">

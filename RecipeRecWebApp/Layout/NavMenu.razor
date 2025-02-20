@@ -1,7 +1,7 @@
 ﻿@using Models;
-@using RecipeRecWebApp.Services;
-@inject CosmosDbService CosmosDbService
-@inject FavoriteStateService FavoriteStateService
+@using RecipeRecWebApp.Contracts;
+@inject ICosmosDbService CosmosDbService
+@inject IFavoriteStateService FavoriteStateService
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">

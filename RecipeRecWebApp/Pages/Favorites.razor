@@ -1,13 +1,12 @@
 ﻿@page "/Favorites"
 @using Models
 @using RecipeRecWebApp.Contracts
-@using RecipeRecWebApp.Services
 @inject IRecipeSearchService RecipeSearchService
 @inject NavigationManager Navigation
 @inject HttpClient Http
 @inject ILogger<Favorites> logger;
-@inject CosmosDbService CosmosDbService
-@inject FavoriteStateService FavoriteStateService
+@inject ICosmosDbService CosmosDbService
+@inject IFavoriteStateService FavoriteStateService
 <PageTitle>Favorites</PageTitle>
 
 <div class="grid-container">

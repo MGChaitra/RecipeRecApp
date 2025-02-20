@@ -18,10 +18,10 @@ builder.Services.AddHttpClient<IRecipeSearchService, RecipeSearchService>(client
 {
     client.BaseAddress = new Uri("https://localhost:7175/"); // Set API base URL
 });
-builder.Services.AddHttpClient<CosmosDbService>(client =>
+builder.Services.AddHttpClient<ICosmosDbService, CosmosDbService>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7175/"); // Set API base URL
 });
-builder.Services.AddSingleton<FavoriteStateService>();
+builder.Services.AddSingleton<IFavoriteStateService,FavoriteStateService>();
 var app = builder.Build();
 await app.RunAsync();
