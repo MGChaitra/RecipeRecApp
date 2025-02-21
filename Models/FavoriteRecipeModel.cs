@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Models
 {
+    /// <summary>
+    /// Represents a favorite recipe, including its unique identifier, name, and instructions.
+    /// </summary>
     public class FavoriteRecipeModel
     {
         [JsonPropertyName("id")]
