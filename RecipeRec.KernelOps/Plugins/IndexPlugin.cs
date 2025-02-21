@@ -60,8 +60,8 @@ namespace RecipeRec.KernelOps.Plugins
 		}
 
 		[KernelFunction("Get_Recipes")]
-		[Description("returns the list of recipes based on provided list of ingredients ")]
-		public async Task<List<RecipeModel>> GetRecipes(List<string> expandedIngredients)
+		[Description("returns the list of recipes based on provided list of ingredients")]
+		public async Task<List<RecipeModel>> GetRecipes(List<string> Ingredients)
 		{
 			List<RecipeModel> returnList = [];
 			try
@@ -70,15 +70,11 @@ namespace RecipeRec.KernelOps.Plugins
 				Response<long> countResponse = await searchClient.GetDocumentCountAsync();
 				int TotalCount = (int)Math.Min(countResponse.Value, N);
 
-				string QueryIngredient = string.Join(", ", expandedIngredients);
+				string QueryIngredient = string.Join(", ", Ingredients);
 
 				#pragma warning disable SKEXP0010 
 				var IngredientsEmbedding = await kernel.GetRequiredService<AzureOpenAITextEmbeddingGenerationService>().GenerateEmbeddingsAsync([QueryIngredient]);
 				#pragma warning restore SKEXP0010 
-
-
-				string? filterQuery = $"Ingredients/any(i: {string.Join(" or ",expandedIngredients.Select(ing => $"i eq '{ing.ToLower()}'"))})";
-
 
 				SearchOptions searchOptions = new SearchOptions()
 				{
@@ -88,7 +84,6 @@ namespace RecipeRec.KernelOps.Plugins
 						Queries = { new VectorizedQuery(IngredientsEmbedding[0]) { KNearestNeighborsCount = 4, Fields = { "RecipeEmbeddings" } } }
 					},
 					Size = TotalCount
-					//Filter = filterQuery
 				};
 				var result = await searchClient.SearchAsync<SearchDocument>(QueryIngredient, options: searchOptions);
 
@@ -108,16 +103,6 @@ namespace RecipeRec.KernelOps.Plugins
 						inst.Add(instItem!.GetValue<string>());
 					}
 					recipe.Instructions = inst;
-					//var ingrArray = jsonObject!["Ingredients"]!.AsArray();
-					//List<IngredientModel> ingre = [];
-					//foreach (var ingred in ingrArray)
-					//{
-					//	var ingrepush = new IngredientModel();
-					//	var name = ingred!.GetValue<string>();
-					//	ingrepush.Name = name;
-					//	ingre.Add(ingrepush);
-					//}
-					//recipe.Ingredients = ingre;
 					returnList.Add(recipe);
 				}
 			}
@@ -153,17 +138,11 @@ namespace RecipeRec.KernelOps.Plugins
 				for (int i = 0; i < recipes.Count; i++)
 				{
 					var recipe = recipes[i];
-					//List<string> ingredients = [];
-					//foreach (var ingredient in recipe.Ingredients)
-					//{
-					//	ingredients.Add(ingredient.Name);
-					//}
 					var document = new SearchDocument
 					{
 						{"Id",Guid.NewGuid().ToString()},
 						{"Name",recipe.Name},
 						{"Description",recipe.Description },
-						//{"Ingredients",ingredients},
 						{"Instructions",recipe.Instructions},
 						{"IsVeg",recipe.IsVeg },
 						{ "RecipeEmbeddings",embeddings[i].Span.ToArray()}

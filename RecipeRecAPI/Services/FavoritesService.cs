@@ -5,28 +5,36 @@ using RecipeRecAPI.Contracts;
 
 namespace RecipeRecAPI.Services
 {
-	public class FavoritesService(ILogger<FavoritesService> logger, IConfiguration configuration) : IFavoritesService
+	public class FavoritesService : IFavoritesService
 	{
-		private readonly ILogger<FavoritesService> logger = logger;
-		private readonly string ConnectionString = configuration["CosmosDBSettings:ConnectionString"]!;
-		private readonly string Database = configuration["CosmosDBSettings:Database"]!;
-		private readonly string Container = configuration["CosmosDBSettings:Container"]!;
-
-		private Container FetchContainer()
+		private readonly ILogger<FavoritesService> logger;
+		private readonly string ConnectionString;
+		private readonly string Database;
+		private readonly string Container;
+		private readonly CosmosClient DbContext;
+		public FavoritesService(ILogger<FavoritesService> logger, IConfiguration configuration)
 		{
-			CosmosClient DbClient = new CosmosClient(ConnectionString, new CosmosClientOptions
+			this.logger = logger;
+			ConnectionString = configuration["CosmosDBSettings:ConnectionString"]!;
+			Database = configuration["CosmosDBSettings:Database"]!;
+			Container = configuration["CosmosDBSettings:Container"]!;
+			DbContext = new CosmosClient(ConnectionString, new CosmosClientOptions
 			{
 				Serializer = new SystemTextJsonSerializer()
 			});
-			var container = DbClient.GetContainer(Database, Container);
-			return container;
 		}
 
+		/// <summary>
+		/// Creates recipe record in Cosmos DB container, where recipe Id is partition key.
+		/// </summary>
+		/// <param name="recipe">Recipe record to be stored</param>
+		/// <returns>string - Success or failure message.</returns>
 		public async Task<string> SaveFavorites(RecipeModel recipe)
 		{
 			try
 			{
-				var container = FetchContainer();
+				recipe.Id = Guid.NewGuid().ToString();
+				var container = DbContext.GetContainer(Database,Container);
 				await container.CreateItemAsync(recipe, new PartitionKey(recipe.Id));
 				return "Saved To Favorites";
 			}
@@ -37,11 +45,16 @@ namespace RecipeRecAPI.Services
 			}
 		}
 
+		/// <summary>
+		///	Deletes recipe record in Cosmos DB container, usingid, partion key..
+		/// </summary>
+		/// <param name="id">string - id to refer to the record to be deleted</param>
+		/// <returns>string - Success or failure message.</returns>
 		public async Task<string> DeleteFavorites(string id)
 		{
 			try
 			{
-				var container = FetchContainer();
+				var container = DbContext.GetContainer(Database,Container);
 				await container.DeleteItemAsync<dynamic>(id, new PartitionKey(id));
 				return "Removed from favorites";
 			}
@@ -52,11 +65,16 @@ namespace RecipeRecAPI.Services
 			}
 		}
 
+		/// <summary>
+		/// Updating/Replacing the recipes in Cosmos DB container, using partition key.
+		/// </summary>
+		/// <param name="recipe">New Recipe record to be replaced with.</param>
+		/// <returns>string - Success or failure message.</returns>
 		public async Task<string> UpdateFavorites(RecipeModel recipe)
 		{
 			try
 			{
-				var container = FetchContainer();
+				var container = DbContext.GetContainer(Database, Container);
 				var response = await container.UpsertItemAsync(recipe, new PartitionKey(recipe.Id));
 				return "Custom Instructions Updated";
 			}
@@ -67,12 +85,16 @@ namespace RecipeRecAPI.Services
 			}
 		}
 
+		/// <summary>
+		/// Fetching all saved recipes from Cosmos DB container.
+		/// </summary>
+		/// <returns>List of RecipeModel - favorite recipes from Cosmos DB container</returns>
 		public async Task<List<RecipeModel>> GetAllRecipes()
 		{
 			List<RecipeModel> fav_recipes = [];
 			try
 			{
-				var container = FetchContainer();
+				var container = DbContext.GetContainer(Database, Container);
 				var queryRes = container.GetItemQueryIterator<RecipeModel>("SELECT * FROM c");
 
 				while (queryRes.HasMoreResults)
@@ -90,6 +112,9 @@ namespace RecipeRecAPI.Services
 		}
 	}
 
+	/// <summary>
+	/// Implements CosmosSerializer abstract class to Serialize the Model attributes to CosmosDB container attributes, ignoring case sensitivity for mapping fields appropriately.
+	/// </summary>
 	class SystemTextJsonSerializer : CosmosSerializer
 	{
 		private readonly JsonSerializerOptions _options = new JsonSerializerOptions

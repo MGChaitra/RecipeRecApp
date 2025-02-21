@@ -29,6 +29,7 @@ namespace RecipeRecWebApp.Services
 			}
 			return instructions;
 		}
+
 		public async Task<List<RecipeModel>> GetRecipes(List<IngredientModel> selectedIngredients)
 		{
 			List<RecipeModel> recipes = [];

@@ -13,6 +13,10 @@ namespace RecipeRecAPI.Services
 		private readonly ILogger<IngredientService> logger = logger;
 		private readonly IKernalProvider kernalProvider = kernalProvider;
 
+		/// <summary>
+		/// Adding new ingredient to foodDB.json file.
+		/// </summary>
+		/// <param name="newIngredient">IngredientModel to be added.</param>
 		public void AddIngredient(IngredientModel newIngredient)
 		{
 			logger.LogInformation("Adding Ingredient");
@@ -35,6 +39,10 @@ namespace RecipeRecAPI.Services
 			}
 		}
 
+		/// <summary>
+		/// Reading foodDB.json ingredients.
+		/// </summary>
+		/// <returns>List of IngredientModel</returns>
 		public List<IngredientModel> GetIngredients()
 		{
 			List<IngredientModel> ingredients = [];

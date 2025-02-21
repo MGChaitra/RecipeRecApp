@@ -10,20 +10,28 @@ namespace RecipeRecAPI.Services
 		private readonly ILogger<RecipeServices> logger = logger;
 		private readonly IKernalProvider kernalProvider = kernalProvider;
 
+		/// <summary>
+		/// Recipes are provided to user based on the selectedIngredients, by LLM utilizing RAG techniques.
+		/// </summary>
+		/// <param name="selectedIngredients">List of Ingredients as context to LLM for generating relevent recipe</param>
+		/// <returns>List of Recipes - RAG recipes</returns>
 		public async Task<List<RecipeModel>> GetRecipes(List<IngredientModel> selectedIngredients)
 		{
 			List<RecipeModel> recipesFromIndex = [];
 			try
 			{
-
-				List<string> expandedIngredients = selectedIngredients.SelectMany(ing => new List<string> { ing.Name.ToLower(), $"{ing.Name.ToLower()}s" }).Distinct().ToList();
-
 				var kernel = kernalProvider.CreateKernal();
 
-				var arguments = new KernelArguments();
-				arguments.Add("expandedIngredients", expandedIngredients);
+				List<string> ingredients = [];
+				foreach(var item in selectedIngredients)
+				{
+					ingredients.Add(item.Name);
+				}
 
 				//retrieval 
+				var arguments = new KernelArguments();
+				arguments.Add("Ingredients", ingredients);
+
 				var res = await kernel.InvokeAsync("IndexPlugin", "Get_Recipes", arguments);
 				recipesFromIndex = res.GetValue<List<RecipeModel>>() ?? [];
 
@@ -33,22 +41,9 @@ namespace RecipeRecAPI.Services
 				arguments.Clear();
 				arguments.Add("selectedIngredients", selectedIngredients);
 				arguments.Add("RetrivedRecipes", recipesFromIndex);
+
 				var resAugmented = await kernel.InvokeAsync("CustomizePlugin", "Rag_indexRecipes", arguments);
 				recipesFromIndex = resAugmented.GetValue<List<RecipeModel>>() ?? [];
-
-
-				//synthetic recipes
-				//List<RecipeModel> RecipesFromAI = [];
-
-				//arguments.Clear();
-				//arguments.Add("selectedIngredients", selectedIngredients);
-				//var recipesAugmented = await kernel.InvokeAsync("CustomizePlugin", "custom_recipes", arguments);
-				//RecipesFromAI = recipesAugmented.GetValue<List<RecipeModel>>() ?? [];
-				//foreach (var recipe in RecipesFromAI)
-				//{
-				//	recipesFromIndex.Add(recipe);
-				//}
-
 			}
 			catch (Exception ex)
 			{
@@ -58,6 +53,11 @@ namespace RecipeRecAPI.Services
 			return recipesFromIndex;
 		}
 
+		/// <summary>
+		/// Customization of instructions using LLM for a specific recipe.
+		/// </summary>
+		/// <param name="recipe">RecipeModel, whose instructions has to be cusomized.</param>
+		/// <returns>List of string - custom instructions for the existing recipe</returns>
 		public async Task<List<string>> CustomInstructions(RecipeModel recipe)
 		{
 			List<string> instructions = [];

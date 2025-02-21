@@ -8,7 +8,6 @@ using RecipeRec.KernelOps.Helper;
 using RecipeRec.KernelOps.Plugins;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
-using Microsoft.SemanticKernel.ChatCompletion;
 
 namespace RecipeRec.KernelOps.KernelProvider
 {
