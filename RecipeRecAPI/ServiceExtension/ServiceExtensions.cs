@@ -28,6 +28,8 @@ namespace RecipeRecAPI.ServiceExtension
                 return new AzureAISearchService(searchServiceName, searchApiKey, endpoint, logger);
             });
 
+            //Cosmos Service
+
             // Cosmos DB Client
             services.AddSingleton<CosmosClient>(sp => new CosmosClient(
                 configuration["CosmosDb:Endpoint"]!,

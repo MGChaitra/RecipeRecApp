@@ -4,8 +4,8 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using RecipeAPIProcessor.Contacts;
 using RecipeAPIProcessor.Services;
-using RecipeRecAPI;
 using RecipeRecAPI.Contracts;
+using RecipeRecAPI.KernelProvider;
 using RecipeRecAPI.Plugins;
 using RecipeRecAPI.ServiceExtension;
 using RecipeRecAPI.Services;
@@ -23,7 +23,8 @@ builder.Services.AddCors(setUp =>
         .WithOrigins("https://localhost:7028/");
     });
 });
-// Add services to the container.
+
+
 // Load configuration
 IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")

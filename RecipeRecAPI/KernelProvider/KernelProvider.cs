@@ -1,7 +1,7 @@
 ﻿using Microsoft.SemanticKernel;
 using RecipeRecAPI.Plugins;
 
-namespace RecipeRecAPI
+namespace RecipeRecAPI.KernelProvider
 {
     public static class KernelProvider
     {
