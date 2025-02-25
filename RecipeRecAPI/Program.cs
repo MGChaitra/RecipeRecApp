@@ -1,8 +1,10 @@
+using Configuration;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using RecipeAPIProcessor.Contacts;
+using RecipeAPIProcessor.ServiceExtensions;
 using RecipeAPIProcessor.Services;
 using RecipeRecAPI.Contracts;
 using RecipeRecAPI.KernelProvider;
@@ -24,17 +26,14 @@ builder.Services.AddCors(setUp =>
     });
 });
 
+// Register ConfigurationService globally
+builder.Services.AddSingleton<ConfigurationService>();
 
-// Load configuration
-IConfiguration configuration = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
-    .AddUserSecrets<Program>()
-    .Build();
+builder.Services.AddLogging();
 
-// Add services via extension methods
-builder.Services.AddApplicationServices(configuration);
-builder.Services.AddSemanticKernel(configuration);
-
+builder.Services.AddSemanticKernel();
+builder.Services.AddApplicationServices();
+builder.Services.AddAzureApplicationServices();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

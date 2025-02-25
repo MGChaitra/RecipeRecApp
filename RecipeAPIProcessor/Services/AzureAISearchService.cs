@@ -21,7 +21,6 @@ public class AzureAISearchService: IAzureAISearchService
         _searchClient = new SearchClient(new Uri(endpoint), _indexName, new AzureKeyCredential(apiKey));
         _logger = logger;
     }
-
     /// <summary>
     /// Creates the Azure AI Search index if it does not exist.
     /// </summary>
@@ -49,11 +48,9 @@ public class AzureAISearchService: IAzureAISearchService
             throw;
         }
     }
-
     /// <summary>
     /// Searches for recipes in Azure AI Search.
     /// </summary>
-
     public async Task<List<RecipeModel>> SearchRecipesAsync(string query)
     {
         if (string.IsNullOrWhiteSpace(query))

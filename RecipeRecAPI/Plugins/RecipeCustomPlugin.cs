@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Text;
 using System.Text.Json;
+using Configuration;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
@@ -11,12 +12,13 @@ namespace RecipeRecAPI.Plugins
 
     public class RecipeCustomPlugin
     {
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<RecipeCustomPlugin> _logger;   
-        public RecipeCustomPlugin(IConfiguration configuration, ILogger<RecipeCustomPlugin> logger)
+       
+        private readonly ILogger<RecipeCustomPlugin> _logger;
+        private readonly ConfigurationService _configurationService;
+        public RecipeCustomPlugin(ConfigurationService configurationService, ILogger<RecipeCustomPlugin> logger)
         {
-            _configuration = configuration;
-            _logger=logger;
+           _configurationService = configurationService;
+            _logger = logger;
         }
 
         [KernelFunction("SummarizeRecipes")]
@@ -24,7 +26,7 @@ namespace RecipeRecAPI.Plugins
         public async Task<List<SummarizedRecipeModel>> SummaryRecipeAsync(string recipe, Kernel kernel)
         {
 
-            string? promptFilePath = _configuration["Prompts:Summary"];
+            string? promptFilePath = _configurationService.GetPromptFilePath("Summary");
             if (string.IsNullOrWhiteSpace(promptFilePath))
             {
                 throw new ArgumentNullException(nameof(promptFilePath));
@@ -44,11 +46,12 @@ namespace RecipeRecAPI.Plugins
             string prompt = promptTemplate.Replace("{recipe}", recipe);
 
             var result = await kernel.InvokePromptAsync<string>(prompt);
-            if(result == null){
+            if (result == null)
+            {
                 throw new Exception("No Response");
             }
-            var response=ParseSummary(result);
-           
+            var response = ParseSummary(result);
+
             return response;
         }
 
@@ -56,7 +59,7 @@ namespace RecipeRecAPI.Plugins
         [Description("Generates new recipe suggestions based on available ingredients.")]
         public async Task<List<RecipeModel>> GenerateRecipesAsync(string ingredients, Kernel kernel)
         {
-            string? promptFilePath = _configuration["Prompts:GenerateRecipes"];
+            string? promptFilePath = _configurationService.GetPromptFilePath("GenerateRecipes");
             if (string.IsNullOrWhiteSpace(promptFilePath))
             {
                 throw new ArgumentNullException(nameof(promptFilePath));
@@ -66,8 +69,8 @@ namespace RecipeRecAPI.Plugins
             try
             {
                 promptTemplate = await File.ReadAllTextAsync(promptFilePath);
-            
-            
+
+
             }
             catch (Exception ex)
             {
@@ -83,7 +86,7 @@ namespace RecipeRecAPI.Plugins
                 throw new Exception("No Response");
             }
             var recipes = ParseRecipes(response);
-           
+
             return recipes;
         }
 
@@ -95,7 +98,7 @@ namespace RecipeRecAPI.Plugins
                 var recipes = JsonSerializer.Deserialize<List<RecipeModel>>(jsonResponse, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true,
-                    ReadCommentHandling=JsonCommentHandling.Skip,
+                    ReadCommentHandling = JsonCommentHandling.Skip,
                     AllowTrailingCommas = true,
                 });
 

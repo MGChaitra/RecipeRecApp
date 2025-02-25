@@ -1,29 +1,36 @@
-﻿using Microsoft.SemanticKernel;
+﻿using Configuration;
+using Microsoft.SemanticKernel;
 using RecipeRecAPI.Plugins;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace RecipeRecAPI.KernelProvider
 {
     public static class KernelProvider
     {
-        public static void AddSemanticKernel(this IServiceCollection services, IConfiguration configuration)
+        public static void AddSemanticKernel(this IServiceCollection services)
         {
+          
+            services.AddSingleton<RecipeCustomPlugin>();
+
             services.AddSingleton(sp =>
             {
+                var configService = sp.GetRequiredService<ConfigurationService>();
+                var logger = sp.GetRequiredService<ILogger<RecipeCustomPlugin>>();
                 var kernelBuilder = Kernel.CreateBuilder();
                 kernelBuilder.AddAzureOpenAIChatCompletion(
-                    deploymentName: configuration["AzureOpenAI:DeploymentName"]!,
-                    endpoint: configuration["AzureOpenAI:Endpoint"]!,
-                    apiKey: configuration["AzureOpenAI:ApiKey"]!
+                    deploymentName: configService.GetAzureOpenAIDeploymentName(),
+                    endpoint: configService.GetAzureOpenAIEndpoint(),
+                    apiKey: configService.GetAzureOpenAIApiKey()
                 );
 
                 var kernel = kernelBuilder.Build();
-                var logger = sp.GetRequiredService<ILogger<RecipeCustomPlugin>>();
-                var recipePlugin = new RecipeCustomPlugin(configuration, logger);
 
+                var recipePlugin = new RecipeCustomPlugin(configService, logger);
+              
                 kernel.Plugins.AddFromObject(recipePlugin, nameof(RecipeCustomPlugin));
-
                 return kernel;
             });
         }
+       
     }
 }
