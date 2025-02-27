@@ -33,7 +33,8 @@ public class AzureAISearchService: IAzureAISearchService
                 Fields = new[]
                 {
                  
-                    new SearchableField("recipe_name") {IsKey = true,  IsFacetable = true},
+                    new SearchableField("id"){IsKey=true,  IsFacetable = true},
+                    new SearchableField("recipe_name") ,
                     new SearchableField("instructions"),
                     new SearchField("embedding", SearchFieldDataType.Collection(SearchFieldDataType.Double)),
                 }

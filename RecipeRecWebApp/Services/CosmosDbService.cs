@@ -33,26 +33,32 @@ namespace RecipeRecWebApp.Services
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync($"api/Cosmos/{recipe.recipe_name}", recipe);
+                var allFav = await _httpClient.GetFromJsonAsync<List<FavoriteRecipeModel>>("api/Cosmos") ?? new List<FavoriteRecipeModel>();
+
+                if (allFav.Any(fav => fav.recipe_name == recipe.recipe_name))
+                {
+                    _logger.LogWarning("Favorite Recipe already exists");
+                    return false;
+                }
+
+                var response = await _httpClient.PostAsJsonAsync($"/api/Cosmos", recipe);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
                 }
             }
-               
             catch (Exception ex)
             {
                 _logger.LogError($"Error adding recipe: {ex.Message}");
-               
             }
             return false;
         }
 
-        public async Task<bool> RemoveFromFv(string recipename)
+        public async Task<bool> RemoveFromFv(string id)
         {
             try
             {
-                var response = await _httpClient.DeleteAsync($"api/Cosmos/{recipename}");
+                var response = await _httpClient.DeleteAsync($"api/Cosmos/{id}");
                 if (response.IsSuccessStatusCode)
                 {
                     return true;

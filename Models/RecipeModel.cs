@@ -11,7 +11,11 @@ namespace Models
     /// Represents a recipe, including its name and instructions.
     /// </summary>
     public class RecipeModel
+        
     {
+
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = string.Empty;
         [JsonPropertyName("recipe_name")]
         public string recipe_name { get; set; } = string.Empty;
 

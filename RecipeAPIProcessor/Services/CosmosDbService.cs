@@ -20,7 +20,7 @@ namespace RecipeAPIProcessor.Services
 
         public async Task AddRecipeAsync(FavoriteRecipeModel recipe)
         {
-            await _container.CreateItemAsync(recipe, new PartitionKey(recipe.recipe_name));
+            await _container.CreateItemAsync(recipe, new PartitionKey(recipe.id));
         }
 
         public async Task<List<FavoriteRecipeModel>> GetRecipesAsync()
@@ -35,20 +35,20 @@ namespace RecipeAPIProcessor.Services
             return results;
         }
 
-        public async Task DeleteRecipeAsync(string recipeName)
+        public async Task DeleteRecipeAsync(string id)
         {
             try
             {
               
-                var recipe = await _container.ReadItemAsync<FavoriteRecipeModel>(recipeName, new PartitionKey(recipeName));
+                var recipe = await _container.ReadItemAsync<FavoriteRecipeModel>(id, new PartitionKey(id));
 
               
-                await _container.DeleteItemAsync<FavoriteRecipeModel>(recipeName, new PartitionKey(recipeName));
+                await _container.DeleteItemAsync<FavoriteRecipeModel>(id, new PartitionKey(id));
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                
-                throw new Exception($"Recipe with id {recipeName} not found.");
+                throw new Exception($"Recipe with id {id} not found.");
             }
         }
         public async Task<FavoriteRecipeModel> GetRecipeByNameAsync(string recipeName)

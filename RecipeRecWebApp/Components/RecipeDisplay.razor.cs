@@ -105,7 +105,7 @@ namespace RecipeRecWebApp.Components
             {
                 var favoriteRecipe = new FavoriteRecipeModel
                 {
-                    id=selectedRecipe.recipe_name,
+                    id= selectedRecipe.Id,
                     recipe_name = selectedRecipe.recipe_name,
                     instructions = selectedRecipe.instructions
                 };

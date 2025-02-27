@@ -10,16 +10,16 @@ Given the following ingredients: **{{ingredients}}**, generate a list of recipes
 ### Example JSON Response:
 [
   {
-    ""recipe_name"": ""Tomato_and_Egg_Stir-Fry"",
+    ""id"": "" ""
+    ""recipe_name"": ""Tomato and Egg Stir Fry"",
     ""instructions"": ""Scramble eggs and set aside. Sauté garlic and tomatoes until soft, add eggs back, season with soy sauce, salt, and sugar.""
   },
   {
-   
-    ""recipe_name"": ""Egg_and_Tomato Omelet"",
+    ""id"": "" ""
+    ""recipe_name"": ""Egg and Tomato Omelet"",
     ""instructions"": ""Whisk eggs with salt and pepper. Cook onions and tomatoes in butter, pour eggs over, top with cheese, and fold when set.""
   }
 ]
 ###Note:
-- ***recipe_name*** is a key, Keys can only contain letters, digits, underscore (_), dash (-), or equal sign (=), strictly do not include space inbetween, ignore the recipes if it has space in ***recipe_name***.
 - remove the ***`json*** tag while printing 
 Now, generate the recipes:

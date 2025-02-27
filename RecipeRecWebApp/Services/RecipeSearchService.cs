@@ -15,14 +15,14 @@ namespace RecipeRecWebApp.Services
 {
     public class RecipeSearchService : IRecipeSearchService
     {
-       
+
         private readonly HttpClient _httpClient;
         private readonly ILogger _logger;
         public RecipeSearchService(ILogger<RecipeSearchService> logger, HttpClient httpClient)
         {
-           _httpClient = httpClient;
+            _httpClient = httpClient;
             _logger = logger;
-          
+
         }
 
         public async Task<List<RecipeModel>> SearchRecipesAsync(List<string> ingredients)
@@ -69,9 +69,9 @@ namespace RecipeRecWebApp.Services
                     var summaryList = await response.Content.ReadFromJsonAsync<List<SummarizedRecipeModel>>();
                     foreach (var sum in summaryList)
                     {
-                      return sum;
+                        return sum;
                     }
-                 
+
                 }
                 return null;
             }
@@ -92,24 +92,27 @@ namespace RecipeRecWebApp.Services
 
             try
             {
+                foreach (var recipe in recipes)
+                {
+                    recipe.Id = Guid.NewGuid().ToString();
+                }
 
                 var response = await _httpClient.PostAsJsonAsync("api/RecipeSearch/upload-recipes", recipes);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation("Successfully stored {0} recipes in Azure Search index", recipes.Count);
-
                 }
                 else
                 {
                     string errorMessage = await response.Content.ReadAsStringAsync();
                     _logger.LogError("Failed to store recipes in Azure Search. Status: {0}, Error: {1}", response.StatusCode, errorMessage);
                 }
-
             }
-            catch (RequestFailedException ex)
+            catch (Exception ex) // Use a more general exception if RequestFailedException is not appropriate
             {
                 _logger.LogError("Failed to store recipes in Azure Search. Error: {0}", ex.Message);
             }
         }
+
     }
 }

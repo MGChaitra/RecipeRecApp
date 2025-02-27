@@ -20,7 +20,7 @@ namespace RecipeRecWebApp.Pages
 
         private async Task RemoveFromFavorites(FavoriteRecipeModel recipe)
         {
-            bool success = await CosmosDbService.RemoveFromFv(recipe.recipe_name);
+            bool success = await CosmosDbService.RemoveFromFv(recipe.id);
             if (success)
             {
                 FavoriteStateService.RemoveFavorites(recipe.recipe_name);

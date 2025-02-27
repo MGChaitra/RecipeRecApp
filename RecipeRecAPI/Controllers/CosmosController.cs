@@ -18,16 +18,16 @@ namespace RecipeRecAPI.Controllers
             _cosmosDbService = cosmosDbService;
         }
 
-        [HttpPost("{recipeName}")]
+        [HttpPost]
         public async Task<IActionResult> AddRecipe([FromBody] FavoriteRecipeModel recipe)
         {
             await _cosmosDbService.AddRecipeAsync(recipe);
             return Ok(new { message = "Recipe added successfully!" });
         }
-        [HttpDelete("{recipeName}")]
-        public async Task<IActionResult> DeleteRecipe(string recipeName)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRecipe(string id)
         {
-            await _cosmosDbService.DeleteRecipeAsync(recipeName);
+            await _cosmosDbService.DeleteRecipeAsync(id);
             return Ok(new { message = "deleted successfully" });
         }
         [HttpGet]
