@@ -6,19 +6,29 @@ using Azure.Search.Documents.Models;
 using Models;
 using Microsoft.Extensions.Logging;
 using RecipeAPIProcessor.Contacts;
+using Configuration;
 
 public class AzureAISearchService: IAzureAISearchService
 {
+
     private readonly SearchIndexClient _indexClient;
     private readonly SearchClient _searchClient;
-    private readonly string _indexName = "recipenew";
+    private readonly string _indexName;
     private readonly string _endpoint;
+    private readonly string _apiKey;
     private readonly ILogger<AzureAISearchService> _logger;
-    public AzureAISearchService(string searchServiceName, string apiKey, string endpoint, ILogger<AzureAISearchService> logger)
+    private readonly ConfigurationService _configurationService;
+    public AzureAISearchService(ConfigurationService configurationService, ILogger<AzureAISearchService> logger)
     {
-        _endpoint = endpoint;
-        _indexClient = new SearchIndexClient(new Uri(endpoint), new AzureKeyCredential(apiKey));
-        _searchClient = new SearchClient(new Uri(endpoint), _indexName, new AzureKeyCredential(apiKey));
+        _configurationService = configurationService;
+
+        _endpoint=_configurationService.GetAzureSearchEndpoint();
+        _apiKey=configurationService.GetAzureSearchApiKey();
+        _indexName=configurationService.GetAzureSearchIndexName();
+
+        _indexClient = new SearchIndexClient(new Uri(_endpoint), new AzureKeyCredential(_apiKey));
+        _searchClient = new SearchClient(new Uri(_endpoint), _indexName, new AzureKeyCredential(_apiKey));
+
         _logger = logger;
     }
     /// <summary>

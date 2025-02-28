@@ -16,6 +16,7 @@ namespace Configuration
         public string GetAzureSearchApiKey() => _configuration["Azure:Search:ApiKey"]!;
         public string GetAzureSearchEndpoint() => _configuration["Azure:Search:Endpoint"]!;
         public string GetAzureSearchUploadEndpoint() => _configuration["Azure:Search:UploadEndpoint"]!;
+        public string GetAzureSearchIndexName() => _configuration["Azure:Search:Index"]!;
 
         public string GetCosmosDbEndpoint() => _configuration["CosmosDb:Endpoint"]!;
         public string GetCosmosDbKey() => _configuration["CosmosDb:Key"]!;

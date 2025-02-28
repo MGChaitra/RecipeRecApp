@@ -21,47 +21,18 @@ namespace RecipeAPIProcessor.ServiceExtensions
             // Register ConfigurationService
             services.AddSingleton<ConfigurationService>();
 
-            services.AddSingleton<IAzureAISearchService, AzureAISearchService>(sp =>
-            {
-                var configService = sp.GetRequiredService<ConfigurationService>();
-                var logger = sp.GetRequiredService<ILogger<AzureAISearchService>>();
+            //Register AzureSearchService
+            services.AddSingleton<IAzureAISearchService, AzureAISearchService>();
 
-                return new AzureAISearchService(
-                    configService.GetAzureSearchServiceName(),
-                    configService.GetAzureSearchApiKey(),
-                    configService.GetAzureSearchEndpoint(),
-                    logger
-                );
-            });
-
-            // Register Cosmos Client using Configuration Service
-            services.AddSingleton<CosmosClient>(sp =>
-            {
-                var configService = sp.GetRequiredService<ConfigurationService>();
-                return new CosmosClient(configService.GetCosmosDbEndpoint(), configService.GetCosmosDbKey());
-            });
 
             // Register CosmosDB Service
-            services.AddSingleton<ICosmosDbService, CosmosDbService>(sp =>
-            {
-                var configService = sp.GetRequiredService<ConfigurationService>();
-                var cosmosClient = sp.GetRequiredService<CosmosClient>();
-                return new CosmosDbService(
-                    cosmosClient,
-                    configService.GetCosmosDbDatabaseName(),
-                    configService.GetCosmosDbContainerName()
-                );
-            });
+            services.AddSingleton<ICosmosDbService, CosmosDbService>();
 
             // Upload Service
             services.AddHttpClient<IUploadToIndexService, UploadToIndexService>();
-            services.AddSingleton<IUploadToIndexService>(sp =>
-            {
-                var configService = sp.GetRequiredService<ConfigurationService>();
-                var httpClient = sp.GetRequiredService<HttpClient>();
 
-                return new UploadToIndexService(httpClient, configService.GetAzureSearchUploadEndpoint(), configService.GetAzureSearchApiKey());
-            });
+          
+           
         }
     }
 }

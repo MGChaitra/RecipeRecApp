@@ -5,18 +5,33 @@ using System.Text;
 using Models;
 using Microsoft.Azure.Cosmos;
 using RecipeAPIProcessor.Contacts;
+using Configuration;
+using Microsoft.Extensions.Configuration;
 namespace RecipeAPIProcessor.Services
 {
-    public class CosmosDbService:ICosmosDbService
+    public class CosmosDbService : ICosmosDbService
 
     {
-        private readonly Container _container;
+      
+    private readonly Container _container;
+        private readonly CosmosClient _client;
+        private readonly string _connectionString;
+        private readonly string _database;
+        private readonly string _endpoint;
+        private readonly string _containerName;
+        private readonly ConfigurationService _configurationService;
 
-        public CosmosDbService(CosmosClient cosmosClient, string databaseName, string containerName)
+        public CosmosDbService(ConfigurationService configuration)
         {
-
-            _container = cosmosClient.GetContainer(databaseName, containerName);
+            _configurationService = configuration;
+            _connectionString = configuration.GetCosmosDbEndpoint();
+            _database = configuration.GetCosmosDbDatabaseName();
+            _containerName = configuration.GetCosmosDbContainerName();
+            _endpoint = configuration.GetCosmosDbKey();
+            _client = new CosmosClient(_connectionString, _endpoint);
+            _container = _client.GetContainer(_database, _containerName);
         }
+
 
         public async Task AddRecipeAsync(FavoriteRecipeModel recipe)
         {
@@ -39,15 +54,15 @@ namespace RecipeAPIProcessor.Services
         {
             try
             {
-              
+
                 var recipe = await _container.ReadItemAsync<FavoriteRecipeModel>(id, new PartitionKey(id));
 
-              
+
                 await _container.DeleteItemAsync<FavoriteRecipeModel>(id, new PartitionKey(id));
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-               
+
                 throw new Exception($"Recipe with id {id} not found.");
             }
         }

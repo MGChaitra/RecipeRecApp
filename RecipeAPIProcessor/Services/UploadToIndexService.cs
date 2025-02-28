@@ -2,6 +2,8 @@
 using System.Text.Json;
 using System.Text;
 using RecipeAPIProcessor.Contacts;
+using Configuration;
+using System.Net.Http;
 
 namespace RecipeAPIProcessor.Services
 {
@@ -10,12 +12,14 @@ namespace RecipeAPIProcessor.Services
         private readonly HttpClient _httpClient;
         private readonly string _endpoint;
         private readonly string _apiKey;
-    
-        public UploadToIndexService(HttpClient httpClient, string endpoint, string apiKey)
+        private readonly ConfigurationService _configurationService;
+  
+        public UploadToIndexService(HttpClient httpClient, ConfigurationService configurationService)
         {
+            _configurationService = configurationService;
             _httpClient = httpClient;
-            _endpoint = endpoint;
-            _apiKey = apiKey;
+            _endpoint = _configurationService.GetAzureSearchUploadEndpoint();
+            _apiKey = _configurationService.GetAzureSearchApiKey();
         }
         public async Task<bool> UploadRecipesToAzureSearch(List<RecipeModel> recipes)
         {
