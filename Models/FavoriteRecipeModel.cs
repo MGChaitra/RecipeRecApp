@@ -13,10 +13,10 @@ namespace Models
     public class FavoriteRecipeModel
     {
         [JsonPropertyName("id")]
-        public string id { get; set; }
+        public string id { get; set; }=string.Empty;
 
         [JsonPropertyName("recipe_name")]
-        public string recipe_name { get; set; } = Guid.NewGuid().ToString();
+        public string recipe_name { get; set; } = string.Empty;
 
         [JsonPropertyName("instructions")]
         public string instructions { get; set; } = string.Empty;

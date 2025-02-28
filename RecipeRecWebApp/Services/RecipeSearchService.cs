@@ -59,7 +59,7 @@ namespace RecipeRecWebApp.Services
             }
         }
 
-        public async Task<SummarizedRecipeModel> SummarizeRecipeAsync(RecipeModel recipe)
+        public async Task<SummarizedRecipeModel?> SummarizeRecipeAsync(RecipeModel recipe)
         {
             try
             {
@@ -67,20 +67,20 @@ namespace RecipeRecWebApp.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var summaryList = await response.Content.ReadFromJsonAsync<List<SummarizedRecipeModel>>();
-                    foreach (var sum in summaryList)
+                    if (summaryList != null && summaryList.Any())
                     {
-                        return sum;
+                        return summaryList.First();
                     }
-
                 }
-                return null;
+                throw new Exception("Failed to summarize recipe.");
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error fetching summary: {ex.Message}");
-                return null;
+                throw;
             }
         }
+
 
         public async Task StoreRecipeAsync(List<RecipeModel> recipes)
         {

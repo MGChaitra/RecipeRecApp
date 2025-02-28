@@ -4,47 +4,60 @@ using System.Text;
 using RecipeAPIProcessor.Contacts;
 using Configuration;
 using System.Net.Http;
+using Microsoft.Extensions.Logging;
 
 namespace RecipeAPIProcessor.Services
 {
-    public class UploadToIndexService: IUploadToIndexService
+    public class UploadToIndexService : IUploadToIndexService
     {
         private readonly HttpClient _httpClient;
         private readonly string _endpoint;
         private readonly string _apiKey;
+        private readonly ILogger<IUploadToIndexService> _logger;
         private readonly ConfigurationService _configurationService;
-  
-        public UploadToIndexService(HttpClient httpClient, ConfigurationService configurationService)
+
+        public UploadToIndexService(HttpClient httpClient, ConfigurationService configurationService, ILogger<IUploadToIndexService> logger)
         {
             _configurationService = configurationService;
             _httpClient = httpClient;
             _endpoint = _configurationService.GetAzureSearchUploadEndpoint();
             _apiKey = _configurationService.GetAzureSearchApiKey();
+            _logger = logger;
         }
+
         public async Task<bool> UploadRecipesToAzureSearch(List<RecipeModel> recipes)
         {
-            var payload = new { value = recipes };
-
-            string jsonContent = JsonSerializer.Serialize(payload, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, _endpoint)
+            try
             {
-                Content = new StringContent(jsonContent, Encoding.UTF8, "application/json")
-            };
-            requestMessage.Headers.Add("api-key", _apiKey);
+                _logger.LogInformation("Starting to upload recipes to Azure Search.");
 
-            var response = await _httpClient.SendAsync(requestMessage);
+                var payload = new { value = recipes };
+                string jsonContent = JsonSerializer.Serialize(payload, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
 
-            if (response.IsSuccessStatusCode)
-            {
-                Console.WriteLine("Recipes successfully indexed.");
-                return true;
+                var requestMessage = new HttpRequestMessage(HttpMethod.Post, _endpoint)
+                {
+                    Content = new StringContent(jsonContent, Encoding.UTF8, "application/json")
+                };
+                requestMessage.Headers.Add("api-key", _apiKey);
+
+                var response = await _httpClient.SendAsync(requestMessage);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Recipes successfully indexed.");
+                    return true;
+                }
+                else
+                {
+                    string errorMessage = await response.Content.ReadAsStringAsync();
+                    _logger.LogError("Failed to index recipes: {ErrorMessage}", errorMessage);
+                    return false;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                string errorMessage = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Failed to index recipes: {errorMessage}");
-                return false;
+                _logger.LogError(ex, "Error uploading recipes to Azure Search.");
+                throw;
             }
         }
     }
